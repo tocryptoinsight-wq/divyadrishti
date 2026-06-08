@@ -553,6 +553,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 4px;">
       <div id="balanceRow" style="display:flex;align-items:center;gap:8px;font-size:12px;margin:12px 0 4px;position:relative;">
         <span id="balanceText" style="color:#9ca3af;cursor:pointer;user-select:none;white-space:nowrap;"></span>
+        <span id="outboundIpSidebar" style="color:#a67c00;font-size:11px;margin-left:2px;white-space:nowrap;"></span>
       </div>
     </div>
   </div>
@@ -4507,22 +4508,27 @@ function updateBalanceDisplay() {
   const hasAccounts = _accounts.length > 0;
   if (!hasAccounts) {
     el.textContent = '';
+    const ipEl2 = document.getElementById('outboundIpSidebar');
+    if (ipEl2) ipEl2.textContent = '';
     modeEl.textContent = '--- No Accounts ---';
     modeEl.style.color = '#ef4444';
     el.style.cursor = 'default';
     return;
   }
   // Balance text (hidable)
+  const ipEl = document.getElementById('outboundIpSidebar');
   if (_balanceHidden) {
     el.textContent = '***';
     el.style.color = '#6b7280';
+    if (ipEl) ipEl.textContent = '';
   } else {
     el.style.color = '#9ca3af';
     const pretty = [];
     for (const [curr, tot] of Object.entries(bals)) {
       if (tot > 0) pretty.push('$ ' + tot.toFixed(2));
     }
-    el.textContent = pretty.length ? 'Balance: ' + pretty.join(' | ') + (_outboundIp ? ' [' + _outboundIp + ']' : '') : '...';
+    el.textContent = pretty.length ? 'Balance: ' + pretty.join(' | ') : '...';
+    if (ipEl) ipEl.textContent = _outboundIp ? '[' + _outboundIp + ']' : '';
   }
   el.style.cursor = 'pointer';
   // Mode label (always visible, never hidable)
