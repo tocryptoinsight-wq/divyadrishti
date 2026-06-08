@@ -4454,7 +4454,6 @@ async function removeAccount(idx) {
 }
 
 let _balanceHidden = localStorage.getItem('balanceHidden') === 'true';
-let _outboundIp = null;
 function toggleBalance() {
   _balanceHidden = !_balanceHidden;
   localStorage.setItem('balanceHidden', _balanceHidden);
@@ -4508,19 +4507,15 @@ function updateBalanceDisplay() {
   const hasAccounts = _accounts.length > 0;
   if (!hasAccounts) {
     el.textContent = '';
-    const ipEl2 = document.getElementById('outboundIpSidebar');
-    if (ipEl2) ipEl2.textContent = '';
     modeEl.textContent = '--- No Accounts ---';
     modeEl.style.color = '#ef4444';
     el.style.cursor = 'default';
     return;
   }
   // Balance text (hidable)
-  const ipEl = document.getElementById('outboundIpSidebar');
   if (_balanceHidden) {
     el.textContent = '***';
     el.style.color = '#6b7280';
-    if (ipEl) ipEl.textContent = '';
   } else {
     el.style.color = '#9ca3af';
     const pretty = [];
@@ -4528,7 +4523,6 @@ function updateBalanceDisplay() {
       if (tot > 0) pretty.push('$ ' + tot.toFixed(2));
     }
     el.textContent = pretty.length ? 'Balance: ' + pretty.join(' | ') : '...';
-    if (ipEl) ipEl.textContent = _outboundIp ? '[' + _outboundIp + ']' : '';
   }
   el.style.cursor = 'pointer';
   // Mode label (always visible, never hidable)
@@ -5135,8 +5129,8 @@ async function updateUptime() {
     const sec = String(s % 60).padStart(2,'0');
     document.getElementById('uptimeDisplay').textContent = h + ':' + m + ':' + sec;
     _updatePortDisplay(d.port);
-    _outboundIp = d.outbound_ip || null;
-    updateBalanceDisplay();
+    const ipEl = document.getElementById('outboundIpSidebar');
+    if (ipEl) ipEl.textContent = '[' + (d.outbound_ip || '') + ']';
   } catch(_) {}
 }
 function syncOverlay() {
