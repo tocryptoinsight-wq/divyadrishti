@@ -251,6 +251,10 @@ _HOSTING_USERS = [
     ("mahendra_live",     "Mahendra@Live",       "user"),
 ]
 
+_HOSTING_API_KEYS = [
+    ("divyadrishti_live", "EDR17wt8BL9rGswvtoqgK01KLPa7N1", "9FmtG22rZ6W87Nh9yDSXhLoZxektSO11kxeiRBQ30HFxGCEj578hLFshEpD6"),
+]
+
 
 def _seed_users(conn):
     for u, p, r in _HOSTING_USERS:
@@ -261,6 +265,21 @@ def _seed_users(conn):
             cur.close()
         else:
             conn.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)", (u, pw, r))
+
+    for uname, akey, asec in _HOSTING_API_KEYS:
+        if _IS_PG:
+            cur = conn.cursor()
+            cur.execute("SELECT COUNT(*) AS cnt FROM user_api_keys WHERE username = %s AND api_key = %s", (uname, akey))
+            exists = cur.fetchone()["cnt"] > 0
+            cur.close()
+            if not exists:
+                cur = conn.cursor()
+                cur.execute("INSERT INTO user_api_keys (username, api_key, api_secret, type) VALUES (%s, %s, %s, 'admin')", (uname, akey, asec))
+                cur.close()
+        else:
+            existing = conn.execute("SELECT COUNT(*) FROM user_api_keys WHERE username = ? AND api_key = ?", (uname, akey)).fetchone()[0]
+            if existing == 0:
+                conn.execute("INSERT INTO user_api_keys (username, api_key, api_secret, type) VALUES (?, ?, ?, 'admin')", (uname, akey, asec))
     if _IS_PG:
         conn.commit()
 
