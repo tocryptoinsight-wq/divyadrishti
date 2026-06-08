@@ -833,6 +833,57 @@ async def get_screener(
     return result
 
 
+@router.get("/screener/prices")
+async def get_screener_prices(current_user: dict | None = Depends(get_current_user_from_cookie)):
+    """Lightweight endpoint returning latest price/change/volume for user's screener symbols only."""
+    if not current_user:
+        return {}
+    symbols = _user_symbols(current_user["username"])
+    if not symbols:
+        return {}
+    prices = {}
+    try:
+        tickers_raw = await delta_client.get_all_tickers()
+        ticker_list = tickers_raw.get("result", []) if isinstance(tickers_raw, dict) else (tickers_raw if isinstance(tickers_raw, list) else [])
+        seen = set()
+        for t in ticker_list:
+            if not isinstance(t, dict):
+                continue
+            sym = t.get("symbol", "")
+            if sym not in symbols or sym in seen:
+                continue
+            seen.add(sym)
+            raw_t = t.get("result", t)
+            price = raw_t.get("mark_price", raw_t.get("close", raw_t.get("last", None)))
+            chg = raw_t.get("ltp_change_24h", None)
+            vol = t.get("turnover_usd", 0) or t.get("volume", 0) or 0
+            prices[sym] = {
+                "last_price": float(price) if price is not None else None,
+                "price_change_24h": float(chg) if chg is not None else None,
+                "volume_24h": float(vol) if vol else 0,
+            }
+    except Exception as e:
+        logger.warning("Failed to fetch screener prices: %s", e)
+    missing = [s for s in symbols if s not in prices]
+    if missing:
+        async def _fetch_one(sym):
+            try:
+                t = await delta_client.get_ticker(sym)
+                if isinstance(t, dict):
+                    raw_t = t.get("result", t)
+                    price = raw_t.get("mark_price", raw_t.get("close", raw_t.get("last", None)))
+                    chg = raw_t.get("ltp_change_24h", None)
+                    return sym, {"last_price": float(price) if price is not None else None, "price_change_24h": float(chg) if chg is not None else None}
+            except Exception:
+                pass
+            return sym, {}
+        results = await asyncio.gather(*[_fetch_one(s) for s in missing])
+        for sym, data in results:
+            if data:
+                prices[sym] = data
+    return prices
+
+
 @router.get("/analysis/{symbol}/candles")
 async def get_candles(
     symbol: str,
