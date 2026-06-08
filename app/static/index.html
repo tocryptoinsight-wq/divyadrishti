@@ -5605,6 +5605,8 @@ function _tbUpdateLegendState() {
   if (exeEl) { exeEl.textContent = text; exeEl.style.background = bg; exeEl.style.color = col; }
   var symEl = document.getElementById('mtfSymbolName');
   if (symEl) symEl.textContent = (currentSymbol || '-').replace(/USD$|USDT$|USD\.P$/g, '');
+  var legendNameEl = document.getElementById('activeSymbolName');
+  if (legendNameEl) legendNameEl.textContent = (currentSymbol || '-').replace(/USD$|USDT$|USD\.P$/g, '');
 }
 function _tbOnTick() {
   if (!chartReady || !candleSeries) return;
