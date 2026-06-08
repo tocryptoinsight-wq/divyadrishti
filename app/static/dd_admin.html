@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DivyaDrishti - Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0b1121;--bg2:#131c31;--bg3:#0f1729;--border:#1e2d4a;--text:#e2e8f0;--muted:#64748b;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--blue:#60a5fa}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;font-size:22px}
+.sidebar-logo div{font-size:11px;color:var(--muted);line-height:1.3}
+.nav{flex:1;padding:12px 0}
+.nav-item{padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);transition:all 0.15s;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{color:var(--text);background:rgba(99,102,241,0.08)}
+.nav-item.active{color:var(--accent);background:rgba(99,102,241,0.12);border-left-color:var(--accent)}
+.nav-bottom{padding:12px 0;border-top:1px solid var(--border)}
+.sidebar-user{padding:10px 16px;font-size:12px;color:var(--muted)}
+.sidebar-user strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.topbar h2{font-size:16px;font-weight:600}
+.content{flex:1;overflow-y:auto;padding:20px 24px}
+.hidden{display:none!important}
+.hamburger{display:none}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:4px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.2s}
+.stat-card:hover{border-color:var(--accent)}
+.stat-label{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:0.5px;margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:700;color:var(--text)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.proc-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
+.proc-item:last-child{border-bottom:none}
+.proc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.proc-info{flex:1;min-width:0}
+.proc-name{font-size:12px;font-weight:600}
+.proc-meta{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proc-status{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;flex-shrink:0}
+.proc-status.online{background:rgba(34,197,94,0.15);color:var(--green)}
+.proc-status.stopped{background:rgba(239,68,68,0.15);color:var(--red)}
+.proc-status.errored{background:rgba(245,158,11,0.15);color:var(--orange)}
+.action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all 0.2s;font-family:inherit}
+.action-btn:hover{border-color:var(--accent);background:rgba(99,102,241,0.08)}
+.action-btn:active{transform:scale(0.97)}
+.action-btn .icon{font-size:22px}.action-btn .label{font-size:11px;font-weight:600;color:var(--text)}
+.action-btn .sub{font-size:10px;color:var(--muted)}
+.btn{padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}
+.btn-danger{background:#dc2626;color:#fff}.btn-danger:hover{background:#ef4444}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:3px 8px;font-size:10px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;background:var(--bg3)}
+td{color:var(--text)}
+tr:hover td{background:rgba(99,102,241,0.04)}
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge-admin{background:rgba(99,102,241,0.15);color:var(--accent)}
+.badge-user{background:rgba(100,116,139,0.15);color:#94a3b8}
+.badge-active{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-inactive{background:rgba(100,116,139,0.15);color:var(--muted)}
+.badge-expired{background:rgba(239,68,68,0.15);color:var(--red)}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block}
+.offline-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.log-box{background:#000;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Cascadia Code','Consolas',monospace;font-size:11px;color:#94a3af;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;line-height:1.6}
+.log-line{padding:1px 0}.log-info{color:#60a5fa}.log-warn{color:#f59e0b}.log-error{color:#ef4444}
+.log-controls{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.log-controls select{padding:4px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px}
+.form-group{margin-bottom:12px}
+.form-group label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.form-group input,.form-group select{padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;outline:none;width:100%}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.form-row .form-group{flex:1;min-width:140px;margin-bottom:0}
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;display:none}
+.alert-error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444}
+.alert-success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green)}
+.alert-info{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);color:var(--accent)}
+.disk-bar{background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;margin-top:8px}
+.disk-fill{height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:6px;transition:width 0.5s}
+/* === Backup UI === */
+.backup-item{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);gap:12px;transition:background 0.15s}
+.backup-item:hover{background:rgba(99,102,241,0.03)}
+.backup-item:last-child{border-bottom:none}
+.backup-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:rgba(99,102,241,0.1);color:var(--accent)}
+.backup-icon.local{background:rgba(99,102,241,0.1);color:var(--accent)}
+.backup-icon.drive{background:rgba(245,158,11,0.12);color:var(--orange)}
+.backup-icon.both{background:rgba(34,197,94,0.12);color:var(--green)}
+.backup-info{flex:1;min-width:0}
+.backup-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px}
+.backup-meta{font-size:10px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:10px}
+.backup-size{font-size:11px;color:var(--muted);flex-shrink:0;font-weight:500}
+.backup-actions{display:flex;gap:4px;flex-shrink:0;align-items:center}
+.backup-restore-btn{padding:4px 10px;border-radius:6px;border:none;background:transparent;color:var(--accent);cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;transition:all 0.15s;font-family:inherit}
+.backup-restore-btn:hover{background:rgba(99,102,241,0.1);color:var(--accent2)}
+.backup-restore-btn:active{transform:scale(0.97)}
+.backup-del-btn{width:28px;height:28px;border-radius:6px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s}
+.backup-del-btn:hover{background:rgba(239,68,68,0.12);color:var(--red)}
+.backup-source-tag{font-size:9px;padding:1px 6px;border-radius:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
+.backup-source-tag.live{background:rgba(99,102,241,0.12);color:var(--accent)}
+.backup-source-tag.dev{background:rgba(96,165,250,0.12);color:var(--blue)}
+.backup-source-tag.local{background:rgba(99,102,241,0.1);color:var(--accent)}
+.backup-source-tag.drive{background:rgba(245,158,11,0.12);color:var(--orange)}
+.backup-source-tag.both{background:rgba(34,197,94,0.12);color:var(--green)}
+
+/* Schedule Card */
+@keyframes schFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.schedule-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;transition:border-color 0.2s,box-shadow 0.2s;animation:schFadeIn 0.2s ease}
+.schedule-card:hover{border-color:rgba(99,102,241,0.25);box-shadow:0 0 0 1px rgba(99,102,241,0.06)}
+.schedule-card:last-child{margin-bottom:0}
+.schedule-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.schedule-title{font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.schedule-actions{display:flex;gap:6px;flex-shrink:0}
+.schedule-save-btn{padding:4px 14px;border-radius:6px;border:none;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:inherit;background:var(--accent);color:#fff;letter-spacing:0.2px}
+.schedule-save-btn:hover{background:var(--accent2)}
+.schedule-save-btn:active{transform:scale(0.97)}
+.schedule-del-btn{padding:4px 14px;border-radius:6px;border:none;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:inherit;background:transparent;color:var(--muted);letter-spacing:0.2px}
+.schedule-del-btn:hover{background:rgba(239,68,68,0.1);color:var(--red)}
+.schedule-del-btn:active{transform:scale(0.97)}
+
+/* Toggle Group */
+.toggle-group{display:inline-flex;background:var(--bg);border-radius:8px;padding:2px;gap:2px;flex-wrap:nowrap}
+.toggle-group .toggle-opt{padding:4px 12px;font-size:10px;cursor:pointer;color:var(--muted);transition:all 0.18s ease;user-select:none;background:transparent;font-family:inherit;font-weight:600;letter-spacing:0.2px;border-radius:6px;border:none;line-height:1.4}
+.toggle-group .toggle-opt:hover{color:var(--text);background:rgba(99,102,241,0.07)}
+.toggle-group .toggle-opt.active{color:#fff;background:var(--accent)}
+
+/* Schedule Form Layout */
+.schedule-form{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.schedule-form .form-group{margin-bottom:0}
+.schedule-form .form-group label{font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);margin-bottom:4px;display:block}
+.schedule-form .form-group input[type="time"]{padding:5px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;outline:none;transition:border-color 0.15s}
+.schedule-form .form-group input[type="time"]:focus{border-color:var(--accent)}
+.schedule-form .form-group input[type="number"]{width:52px;padding:5px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;outline:none;transition:border-color 0.15s}
+.schedule-form .form-group input[type="number"]:focus{border-color:var(--accent)}
+.schedule-form .form-group select{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;padding:4px 6px;outline:none;transition:border-color 0.15s}
+.schedule-form .form-group select:focus{border-color:var(--accent)}
+.schedule-form .form-group input[type="checkbox"]{accent-color:var(--accent);cursor:pointer;width:16px;height:16px;margin-top:2px}
+.schedule-badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
+.schedule-badge.enabled{background:rgba(34,197,94,0.12);color:var(--green)}
+.schedule-badge.disabled{background:rgba(100,116,139,0.12);color:var(--muted)}
+.schedule-next{font-size:10px;color:var(--muted)}
+.schedule-next strong{color:var(--text);font-weight:600}
+
+/* Manual Backup */
+.manual-backup-btn{padding:6px 18px}
+.manual-backup-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.manual-backup-btn:active{transform:scale(0.97)}
+.toast{position:fixed;bottom:20px;right:20px;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.toast.green{background:var(--green);color:#000}.toast.red{background:var(--red);color:#fff}.toast.blue{background:var(--accent);color:#fff}.toast.show{opacity:1;pointer-events:none}
+.search-box{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;gap:8px}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:12px;flex:1}
+.search-box input::placeholder{color:var(--muted)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;justify-content:center;align-items:center}
+.modal-overlay.active{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:560px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.modal-narrow{max-width:380px}
+.modal-icon{font-size:36px;margin-bottom:12px}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.modal-body{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.modal-actions{display:flex;gap:10px;justify-content:center}
+.modal-actions .btn{flex:1;justify-content:center}
+.modal-input{width:100%;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;margin-top:8px;box-sizing:border-box}
+.expiry-input-sm{width:160px;padding:3px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;outline:none;color-scheme:dark}
+.expiry-input-sm:focus{border-color:var(--accent)}
+.online-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:11px;margin:2px}
+.online-chip .name{font-weight:600;color:var(--text)}
+.online-chip .time{color:var(--muted);font-size:10px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#2a3a5c}
+.pw-form{width:100%;margin-bottom:20px}
+.pw-form label{display:block;font-size:12px;color:#94a3b8;margin-bottom:4px}
+.pw-field{position:relative;width:100%}
+.pw-field input{width:100%;padding:10px 40px 10px 12px;background:#0f1729;border:1px solid #1e2d4a;border-radius:6px;color:#e2e8f0;font-size:14px;outline:none;transition:border-color 0.15s;box-sizing:border-box}
+.pw-field input:focus{border-color:#6366f1}
+.pw-field + .pw-field{margin-top:16px}
+.pw-toggle{position:absolute;right:2px;top:2px;bottom:2px;width:34px;cursor:pointer;font-size:17px;border:none;background:none;color:#64748b;display:flex;align-items:center;justify-content:center;border-radius:4px;z-index:2;padding:0}
+.pw-toggle:hover{color:#e2e8f0;background:rgba(255,255,255,0.08)}
+.pw-error{color:#ef4444;font-size:12px;margin-top:6px;display:none;text-align:center}
+@media(max-width:1024px){.status-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))} .action-grid{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}}
+@media(max-width:900px){.status-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-240px;top:0;bottom:0;width:240px;z-index:1000;transition:left 0.25s ease;flex-direction:column;height:100vh;border-right:1px solid var(--border)}
+  .sidebar.open{left:0}
+  .sidebar-logo{display:flex}
+  .nav{flex-direction:column;overflow-y:auto;padding:8px 0;flex:1}
+  .nav-item{padding:12px 16px}
+  .nav-bottom{margin-top:auto}
+  .sidebar-user{display:flex;border-top:1px solid var(--border);padding:12px 16px}
+  .sidebar-user strong{font-size:13px}
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999}
+  .sidebar-overlay.active{display:block}
+  .hamburger{display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0;user-select:none}
+  .hamburger svg{width:20px;height:20px;color:var(--muted);flex-shrink:0}
+  .hamburger svg:hover{color:var(--text)}
+  .main{width:100%}
+  .topbar{padding:10px 14px}
+  .topbar h2{font-size:14px}
+  .content{padding:12px 14px}
+  .status-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .stat-card{padding:10px 12px}
+  .stat-value{font-size:18px}
+  div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;gap:12px}
+  .action-grid{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px}
+  .action-btn{padding:12px 8px}
+  .action-btn .icon{font-size:18px}
+  .card{padding:12px;margin-bottom:10px}
+  .form-row{gap:6px}
+  .form-row .form-group{min-width:100%;margin-bottom:6px}
+  .search-box{width:100%!important}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{font-size:11px}
+  th,td{padding:6px 8px}
+  .modal-box{padding:16px;width:94%}
+  .backup-item{flex-wrap:wrap;gap:8px;padding:10px 12px}
+  .backup-size{order:1;width:auto}
+  .backup-actions{order:2}
+  .backup-meta{flex-wrap:wrap}
+  .schedule-card{padding:12px}
+  .schedule-header{flex-direction:column;align-items:start;gap:8px}
+  .schedule-actions{width:100%;display:flex;gap:6px}
+  .schedule-save-btn,.schedule-del-btn{flex:1;text-align:center}
+  .schedule-form{gap:8px}
+  .schedule-form .form-group{min-width:calc(50% - 4px)}
+  .toggle-group{flex-wrap:wrap}
+  .toggle-group .toggle-opt{padding:4px 10px;font-size:10px}
+  #manualSourceGroup,
+  #manualDestGroup{flex-wrap:wrap}
+  .log-controls{flex-wrap:wrap;gap:4px}
+  .log-box{max-height:250px;font-size:10px}
+  .expiry-input-sm{width:130px}
+  .online-chip{padding:4px 8px;font-size:10px}
+}
+@media(max-width:480px){
+  .topbar{padding:8px 10px}
+  .topbar h2{font-size:13px}
+  .content{padding:8px 10px}
+  .status-grid{grid-template-columns:1fr;gap:6px}
+  .stat-value{font-size:16px}
+  .stat-card{padding:8px 10px}
+  .action-grid{grid-template-columns:1fr 1fr;gap:4px}
+  .action-btn{padding:10px 6px}
+  table{font-size:10px}
+  th,td{padding:4px 6px}
+  .card{padding:10px;margin-bottom:8px}
+  .card-title{font-size:12px}
+  .modal-box{padding:12px;width:96%}
+  .form-group input,.form-group select,.form-row select{padding:5px 8px;font-size:11px}
+  .search-box{padding:4px 8px}
+  .search-box input{font-size:11px}
+  .log-box{max-height:180px}
+  .btn{padding:4px 10px;font-size:11px}
+  .online-chip{padding:3px 6px;font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon">&#x2691;</div>
+    <div class="modal-title" id="modalTitle">Confirm</div>
+    <div class="modal-body" id="modalBody">Are you sure?</div>
+    <div class="modal-input-wrap" id="modalInputWrap" style="display:none">
+      <div class="pw-form">
+        <label for="modalInput">Password</label>
+        <div class="pw-field">
+          <input type="password" id="modalInput" placeholder="Enter password" oninput="pwToggleVis(this)">
+          <button type="button" class="pw-toggle" onclick="togglePw('modalInput',this)" tabindex="-1">&#x1F441;</button>
+        </div>
+        <label for="modalInputConfirm">Confirm Password</label>
+        <div class="pw-field">
+          <input type="password" id="modalInputConfirm" placeholder="Confirm password" oninput="pwToggleVis(this)">
+          <button type="button" class="pw-toggle" onclick="togglePw('modalInputConfirm',this)" tabindex="-1">&#x1F441;</button>
+        </div>
+        <div class="pw-error" id="pwError"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="3"/></svg>
+      <div>DivyaDrishti<br><span style="font-size:10px;color:#6366f1">Admin Panel</span></div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" data-section="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="label">Dashboard</span>
+      </div>
+      <div class="nav-item" data-section="users">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="label">Users</span>
+      </div>
+      <div class="nav-item" data-section="system">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41"/><path d="M4.93 4.93l1.41 1.41"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m19.07 19.07-1.41-1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+        <span class="label">System</span>
+      </div>
+      <div class="nav-item" data-section="logs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="label">Logs</span>
+      </div>
+      <div class="nav-item" data-section="backups">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        <span class="label">Backups</span>
+      </div>
+    </div>
+    <div class="nav-bottom">
+      <div class="nav-item" id="goHomeBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <span class="label">Back to App</span>
+      </div>
+      <div class="nav-item" id="logoutBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="label">Logout</span>
+      </div>
+    </div>
+    <div class="sidebar-user"><strong id="userName"></strong><span id="userRole"></span></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="hamburger" id="hamburgerBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <h2 id="sectionTitle">Dashboard</h2>
+      </div>
+    </div>
+    <div class="content">
+
+      <div id="sec-dashboard">
+        <div class="status-grid" id="statusGrid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px">
+          <div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Quick Actions</div></div>
+              <div class="action-grid">
+                <button class="action-btn" id="actionRestart">
+                  <span class="icon">&#x21BB;</span><span class="label">Restart</span><span class="sub">All services</span>
+                </button>
+                <button class="action-btn" id="actionBackupLive">
+                  <span class="icon">&#9729;</span><span class="label">Live Backup</span><span class="sub">Back up live project to Drive</span>
+                </button>
+                <button class="action-btn" id="actionBackupDev">
+                  <span class="icon">&#128187;</span><span class="label">Dev Backup</span><span class="sub">Back up dev project to Drive</span>
+                </button>
+                <button class="action-btn" id="actionStop">
+                  <span class="icon">&#x25A0;</span><span class="label">Stop</span><span class="sub">All services</span>
+                </button>
+                <button class="action-btn" id="actionStart">
+                  <span class="icon">&#x25B6;</span><span class="label">Start</span><span class="sub">Resume services</span>
+                </button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Services</div>
+                <button class="btn btn-outline btn-sm" id="refreshStatus">Refresh</button>
+              </div>
+              <div id="procList"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Storage</div></div>
+              <div id="diskInfo"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Online Users <span id="onlineCount" style="font-size:10px;color:#64748b;font-weight:400"></span></div>
+              </div>
+              <div id="onlineUsers" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;align-items:flex-start"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sec-users" class="hidden">
+        <div class="alert alert-success" id="userAlert"></div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Create User</div></div>
+          <div class="form-row">
+            <div class="form-group"><label>Username</label><input type="text" id="newUsername" placeholder="username"></div>
+            <div class="form-group"><label>Password</label><input type="text" id="newPassword" placeholder="password"></div>
+            <div class="form-group"><label>Role</label><select id="newRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
+            <div class="form-group"><label>Expires At</label><input type="datetime-local" id="newExpiry" class="expiry-input-sm" style="width:200px"></div>
+            <div class="form-group" style="flex:0"><label>&nbsp;</label><button class="btn btn-primary" id="createUserBtn">Create</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">All Users</div>
+            <div class="search-box" style="width:200px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="userSearch" placeholder="Search...">
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>User</th><th>Role</th><th>Status</th><th>Last Active</th><th>Failed</th><th>Created</th><th>Expires</th><th>Actions</th></tr></thead>
+              <tbody id="usersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="sec-system" class="hidden">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Deploy to Live</div></div>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:12px">Sync E:\DDTools\DDScanner to D:\DivyaDrishti\DDTools-live. Services will restart.</p>
+          <button class="btn btn-primary" id="deployBtn">&#x2B95; Deploy Now</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Clear Logs</div></div>
+          <div class="form-row" style="margin-bottom:10px">
+            <div class="form-group" style="flex:0">
+              <label>Service</label>
+              <select id="clearService"><option value="divyadrishti-live">divyadrishti-live</option><option value="divyadrishti-tunnel">divyadrishti-tunnel</option></select>
+            </div>
+          </div>
+          <button class="btn btn-outline" id="clearLogsBtn">Clear Logs</button>
+        </div>
+      </div>
+
+      <div id="sec-logs" class="hidden">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Live Logs</div><button class="btn btn-outline btn-sm" id="refreshLogs">Refresh</button></div>
+          <div class="log-controls">
+            <select id="logService"><option value="divyadrishti-live">divyadrishti-live</option><option value="divyadrishti-tunnel">divyadrishti-tunnel</option></select>
+            <select id="logLines"><option value="50">50 lines</option><option value="100">100 lines</option><option value="200">200 lines</option><option value="500">500 lines</option></select>
+            <label style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:4px"><input type="checkbox" id="autoRefresh"> Auto 10s</label>
+          </div>
+          <div class="log-box" id="logBox">Loading logs...</div>
+        </div>
+      </div>
+
+      <div id="sec-backups" class="hidden">
+        <div class="alert alert-success" id="backupAlert"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+              One-Time Backup
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:end;padding:2px 0">
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);margin-bottom:5px">Source</div>
+              <div class="toggle-group" id="manualSourceGroup">
+                <button type="button" class="toggle-opt active" data-val="live">Live</button>
+                <button type="button" class="toggle-opt" data-val="dev">Dev</button>
+                <button type="button" class="toggle-opt" data-val="both">Both</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);margin-bottom:5px">Destination</div>
+              <div class="toggle-group" id="manualDestGroup">
+                <button type="button" class="toggle-opt active" data-val="both">Both</button>
+                <button type="button" class="toggle-opt" data-val="local">Local</button>
+                <button type="button" class="toggle-opt" data-val="drive">Drive</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);margin-bottom:5px">&nbsp;</div>
+              <button class="btn btn-primary manual-backup-btn" id="runManualBackupBtn" style="display:inline-flex;align-items:center;gap:6px;padding:6px 18px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                Run Now
+              </button>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+            Creates a backup immediately with the selected options. Service will be paused during backup.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Scheduled Backups
+            </div>
+            <button class="btn btn-outline btn-sm" id="addScheduleBtn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Schedule
+            </button>
+          </div>
+          <div id="schedulesContainer">
+            <div style="font-size:12px;color:#64748b;text-align:center;padding:20px">Loading schedules...</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Backup Archive
+              <span id="backupCount" style="font-size:10px;color:var(--muted);font-weight:400"></span>
+            </div>
+            <button class="btn btn-outline btn-sm" id="refreshBackups" title="Refresh backup list">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
+          <div id="backupList">Loading...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  var API = '/api';
+  var allUsers = [];
+  var refreshTimer = null;
+  var pendingAction = null;
+  var pendingUserId = null;
+
+  function getHeaders() {
+    var t = localStorage.getItem('token');
+    var h = {'Content-Type':'application/json'};
+    if (t) h['Authorization'] = 'Bearer ' + t;
+    return h;
+  }
+
+  function toast(msg, type) {
+    type = type || 'green';
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    setTimeout(function() { el.classList.remove('show'); }, 3000);
+  }
+
+  function showAlert(id, msg, type) {
+    type = type || 'success';
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'alert alert-' + type;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 4000);
+  }
+
+  function isOnline(lastActive) {
+    if (!lastActive) return false;
+    try {
+      var d = new Date(lastActive.endsWith('Z') || lastActive.includes('+') ? lastActive : lastActive + 'Z');
+      return (Date.now() - d.getTime()) < 300000;
+    } catch(e) { return false; }
+  }
+
+  function formatBytes(b) {
+    if (!b) return '0 B';
+    var sizes = ['B','KB','MB','GB','TB'];
+    var i = Math.floor(Math.log(b) / Math.log(1024)) || 0;
+    return (b / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+  }
+
+  function formatUptime(ts) {
+    if (!ts) return '-';
+    try {
+      var diff = Date.now() - new Date(ts).getTime();
+      var s = Math.floor(diff / 1000);
+      var m = Math.floor(s / 60);
+      var h = Math.floor(m / 60);
+      var d = Math.floor(h / 24);
+      if (d > 0) return d + 'd ' + (h % 24) + 'h';
+      if (h > 0) return h + 'h ' + (m % 60) + 'm';
+      if (m > 0) return m + 'm ' + (s % 60) + 's';
+      return s + 's';
+    } catch(e) { return '-'; }
+  }
+
+  function pwToggleVis(inp) {
+    var field = inp.parentNode;
+    if (inp.value.length > 0) field.classList.add('has-text');
+    else field.classList.remove('has-text');
+  }
+
+  function togglePw(inputId, el) {
+    var inp = document.getElementById(inputId);
+    if (inp.type === 'password') { inp.type = 'text'; el.textContent = '\u{1F441}\u200D\u{1F5E8}'; }
+    else { inp.type = 'password'; el.textContent = '\u{1F441}'; }
+  }
+
+  function escHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showModal(opts) {
+    document.getElementById('modalIcon').textContent = opts.icon || '\u2691';
+    document.getElementById('modalTitle').textContent = opts.title || 'Confirm';
+    document.getElementById('modalBody').innerHTML = opts.body || '';
+    var inputWrap = document.getElementById('modalInputWrap');
+    var input = document.getElementById('modalInput');
+    var confirmBtn = document.getElementById('modalConfirm');
+
+    if (opts.input) {
+      document.querySelector('.modal-box').classList.add('modal-narrow');
+      inputWrap.style.display = 'block';
+      input.value = '';
+      input.placeholder = opts.inputPlaceholder || '';
+      document.getElementById('modalInputConfirm').value = '';
+      document.getElementById('pwError').style.display = 'none';
+      document.getElementById('modalInput').type = 'password';
+      document.getElementById('modalInputConfirm').type = 'password';
+      // Reset toggle visibility
+      document.querySelectorAll('.pw-field').forEach(function(f){ f.classList.remove('has-text'); });
+      input.focus();
+    } else {
+      document.querySelector('.modal-box').classList.remove('modal-narrow');
+      inputWrap.style.display = 'none';
+    }
+
+    confirmBtn.className = opts.confirmClass || 'btn btn-primary';
+    confirmBtn.textContent = opts.confirmText || 'Confirm';
+
+    pendingAction = opts.action || null;
+    pendingUserId = opts.userId || null;
+    document.getElementById('modalCancel').style.display = opts.hideCancel ? 'none' : '';
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function closeModal() {
+    document.querySelector('.modal-box').classList.remove('modal-narrow');
+    document.getElementById('modalOverlay').classList.remove('active');
+    pendingAction = null;
+    pendingUserId = null;
+  }
+
+  function doModalConfirm() {
+    var action = pendingAction;
+    closeModal();
+    if (!action) return;
+
+    if (action.type === 'clearLogs') {
+      clearLogs();
+      return;
+    }
+    if (action.type === 'deleteUser') {
+      deleteUserConfirmed(action.userId);
+      return;
+    }
+    if (action.type === 'deleteBackup') {
+      deleteBackupFile(action.filename);
+      return;
+    }
+    if (action.type === 'restoreBackup') {
+      restoreBackup(action.filename);
+      return;
+    }
+    if (action.type === 'editUser') {
+      var pw = document.getElementById('modalInput').value;
+      var confirmPw = document.getElementById('modalInputConfirm').value;
+      var pwErr = document.getElementById('pwError');
+      if (!pw.trim()) { pwErr.textContent = 'Password is required'; pwErr.style.display = 'block'; return; }
+      if (pw !== confirmPw) { pwErr.textContent = 'Passwords do not match'; pwErr.style.display = 'block'; return; }
+      saveUserPassword(action.userId, pw.trim());
+      return;
+    }
+    execAction(action.type);
+  }
+
+  document.getElementById('modalInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); doModalConfirm(); }
+  });
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+
+  function execAction(action) {
+    var names = {restart:'Restart',backup:'Backup',start:'Start',stop:'Stop',deploy:'Deploy','backup-live':'Live Backup','backup-dev':'Dev Backup'};
+    fetch(API + '/admin/system/action', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({action: action})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.success) {
+        showActionOutput(names[action], d.action_id);
+      } else {
+        toast('Failed: ' + (d.detail || 'Unknown error'), 'red');
+      }
+    }).catch(function(e) {
+      toast('Failed to start ' + names[action], 'red');
+    });
+  }
+
+  function showActionOutput(label, actionId) {
+    var html = '<div style="background:#0b1121;border:1px solid #1e2d4a;border-radius:6px;padding:10px;max-height:380px;overflow-y:auto;font-family:Consolas,monospace;font-size:11px;line-height:1.6;color:#e2e8f0;text-align:left;white-space:pre-wrap;" id="actionOutput">Starting...</div>';
+    showModal({
+      icon: '\u2699',
+      title: label + ' — Running...',
+      body: html,
+      confirmText: 'Close',
+      hideCancel: true,
+      confirmClass: 'btn btn-outline',
+      action: null,
+    });
+    var titleEl = document.getElementById('modalTitle');
+    var poll = setInterval(function() {
+      fetch(API + '/admin/system/action-status/' + actionId, {headers: getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var el = document.getElementById('actionOutput');
+        if (!el) { clearInterval(poll); return; }
+        el.textContent = d.lines.length ? d.lines.join('\n') : 'Waiting for output...';
+        el.scrollTop = el.scrollHeight;
+        if (d.done) {
+          clearInterval(poll);
+          var ok = d.returncode === 0;
+          if (titleEl) titleEl.textContent = label + ' — ' + (ok ? 'Successful' : 'Failed (code ' + d.returncode + ')');
+          var iconEl = document.getElementById('modalIcon');
+          if (iconEl) iconEl.textContent = ok ? '\u2714' : '\u2718';
+          document.getElementById('modalConfirm').textContent = ok ? 'Close' : 'Close';
+          if (ok) setTimeout(closeModal, 2000);
+        }
+      }).catch(function() {
+        clearInterval(poll);
+        var el = document.getElementById('actionOutput');
+        if (el) el.textContent = (el.textContent || '') + '\n\n[Connection lost — server may be restarting]';
+        if (titleEl) titleEl.textContent = label + ' — Connection lost';
+      });
+    }, 1000);
+  }
+
+  function showSection(name) {
+    var sections = document.querySelectorAll('[id^="sec-"]');
+    for (var i = 0; i < sections.length; i++) sections[i].classList.add('hidden');
+    var target = document.getElementById('sec-' + name);
+    if (target) target.classList.remove('hidden');
+
+    var navItems = document.querySelectorAll('.nav-item[data-section]');
+    for (var j = 0; j < navItems.length; j++) navItems[j].classList.remove('active');
+    var activeNav = document.querySelector('.nav-item[data-section="' + name + '"]');
+    if (activeNav) activeNav.classList.add('active');
+
+    var titles = {dashboard:'Dashboard', users:'User Management', system:'System Control', logs:'Server Logs', backups:'Backup Manager'};
+    document.getElementById('sectionTitle').textContent = titles[name] || name;
+
+    if (name === 'dashboard') loadStatus();
+    if (name === 'users') loadUsers();
+    if (name === 'logs') loadLogs();
+    if (name === 'backups') { loadBackups(); loadSchedules(); }
+  }
+
+  function loadStatus() {
+    fetch(API + '/admin/system/status', {headers: getHeaders()}).then(function(r) { return r.json(); }).then(function(d) {
+      if (!d.success) return;
+
+      var siteOk = d.site === 'online';
+      var diskPct = d.disk_total > 0 ? Math.round((d.disk_used / d.disk_total) * 100) : 0;
+      var onlineCount = 0;
+      for (var k = 0; k < allUsers.length; k++) {
+        if (isOnline(allUsers[k].last_active)) onlineCount++;
+      }
+
+      document.getElementById('statusGrid').innerHTML =
+        '<div class="stat-card"><div class="stat-label">Website</div><div class="stat-value" style="color:' + (siteOk ? '#22c55e' : '#ef4444') + '">' + (siteOk ? 'Online' : 'Offline') + '</div><div class="stat-sub">divyadrishti.site</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Services</div><div class="stat-value" style="color:#22c55e">' + d.processes.filter(function(p) { return p.status === 'online'; }).length + '/' + d.processes.length + '</div><div class="stat-sub">PM2 processes</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Storage Used</div><div class="stat-value" style="color:' + (diskPct > 85 ? '#ef4444' : diskPct > 70 ? '#f59e0b' : '#22c55e') + '">' + diskPct + '%</div><div class="stat-sub">' + formatBytes(d.disk_used) + ' / ' + formatBytes(d.disk_total) + '</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Uptime</div><div class="stat-value" style="font-size:16px">' + (d.processes[0] ? formatUptime(d.processes[0].uptime) : '-') + '</div><div class="stat-sub">divyadrishti-live</div></div>';
+
+      var iconMap = {'divyadrishti-live':'\u2693','divyadrishti-tunnel':'\u2601'};
+      var colorMap = {'divyadrishti-live':'#818cf8','divyadrishti-tunnel':'#60a5fa'};
+      var procHTML = '';
+      for (var pi = 0; pi < d.processes.length; pi++) {
+        var p = d.processes[pi];
+        var st = p.status || 'stopped';
+        var stClass = st === 'online' ? 'online' : st === 'errored' ? 'errored' : 'stopped';
+        procHTML += '<div class="proc-item">' +
+          '<div class="proc-icon" style="background:' + (colorMap[p.name]||'#6366f1') + '22;color:' + (colorMap[p.name]||'#6366f1') + '">' + (iconMap[p.name]||'\u26A1') + '</div>' +
+          '<div class="proc-info"><div class="proc-name">' + escHtml(p.name) + '</div><div class="proc-meta">PID: ' + p.pid + ' | Restarts: ' + p.restarts + ' | CPU: ' + p.cpu + '% | Mem: ' + formatBytes(p.memory) + '</div></div>' +
+          '<div class="proc-status ' + stClass + '">' + st + '</div></div>';
+      }
+      document.getElementById('procList').innerHTML = procHTML || '<div style="font-size:12px;color:#64748b;padding:10px 0">No processes found</div>';
+
+      document.getElementById('diskInfo').innerHTML =
+        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#94a3b8">Used</span><span>' + formatBytes(d.disk_used) + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px"><span style="color:#94a3b8">Free</span><span>' + formatBytes(d.disk_total - d.disk_used) + '</span></div>' +
+        '<div class="disk-bar"><div class="disk-fill" style="width:' + diskPct + '%"></div></div>';
+
+      renderOnlineUsers();
+    }).catch(function(e) { console.error('loadStatus', e); });
+  }
+
+  function renderOnlineUsers() {
+    var el = document.getElementById('onlineUsers');
+    var online = [];
+    for (var i = 0; i < allUsers.length; i++) {
+      if (isOnline(allUsers[i].last_active)) online.push(allUsers[i]);
+    }
+    document.getElementById('onlineCount').textContent = online.length > 0 ? '(' + online.length + ')' : '';
+    if (online.length === 0) {
+      el.innerHTML = '<div style="font-size:11px;color:#64748b">No users online</div>';
+      return;
+    }
+    var html = '';
+    for (var j = 0; j < online.length; j++) {
+      var la = online[j].last_active ? new Date(online[j].last_active.endsWith('Z') || online[j].last_active.includes('+') ? online[j].last_active : online[j].last_active + 'Z').toLocaleTimeString() : '';
+      html += '<div class="online-chip"><span class="online-dot"></span><span class="name">' + escHtml(online[j].username) + '</span><span class="time">' + la + '</span></div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function loadUsers() {
+    fetch(API + '/admin/users', {headers: getHeaders()}).then(function(r) { return r.json(); }).then(function(d) {
+      if (!d.success) return;
+      allUsers = d.users;
+      renderUsers();
+      renderOnlineUsers();
+    }).catch(function(e) { console.error('loadUsers', e); });
+  }
+
+  function renderUsers() {
+    var q = (document.getElementById('userSearch') ? document.getElementById('userSearch').value : '').toLowerCase();
+    var now = new Date();
+    var filtered = [];
+    for (var fi = 0; fi < allUsers.length; fi++) {
+      if (allUsers[fi].username.toLowerCase().indexOf(q) !== -1) filtered.push(allUsers[fi]);
+    }
+    var selfUsername = localStorage.getItem('username') || '';
+    var html = '';
+    for (var i = 0; i < filtered.length; i++) {
+      var u = filtered[i];
+      var isSelf = u.username === selfUsername;
+
+      var statusBadge = 'badge-active', statusText = 'Active';
+      if (!u.is_active) { statusBadge = 'badge-inactive'; statusText = 'Inactive'; }
+      else if (u.expires_at && new Date(u.expires_at) < now) { statusBadge = 'badge-expired'; statusText = 'Expired'; }
+
+      var onlineFlag = isOnline(u.last_active);
+      var blocked = u.failed_attempts >= 5;
+      var expiryVal = u.expires_at ? (u.expires_at.replace(' ', 'T').includes('T') ? u.expires_at.replace(' ', 'T').substring(0, 16) : u.expires_at.replace(' ', 'T') + 'T00:00') : '';
+
+      html += '<tr>' +
+        '<td>' + u.id + '</td>' +
+        '<td><strong>' + escHtml(u.username) + '</strong>' + (isSelf ? ' <span style="font-size:10px;color:#6366f1">(you)</span>' : '') + '</td>' +
+        '<td><span class="badge badge-' + u.role + '">' + u.role + '</span></td>' +
+        '<td><span class="badge ' + statusBadge + '">' + statusText + '</span></td>' +
+        '<td style="font-size:11px;color:' + (onlineFlag ? '#22c55e' : '#64748b') + '">' + (onlineFlag ? '<span class="online-dot"></span> ' : '') + (onlineFlag ? 'Online' : (u.last_active ? new Date(u.last_active.endsWith('Z') || u.last_active.includes('+') ? u.last_active : u.last_active + 'Z').toLocaleString() : '-')) + '</td>' +
+        '<td style="color:' + (blocked ? '#ef4444' : '#94a3b8') + ';font-weight:' + (blocked ? '700' : '400') + '">' + u.failed_attempts + '/5</td>' +
+        '<td style="font-size:11px;color:#64748b">' + (u.created_at ? u.created_at.split(' ')[0] : '-') + '</td>' +
+        '<td style="font-size:11px;color:#64748b">' + (u.expires_at ? new Date(u.expires_at.replace(' ', 'T')).toLocaleString() : '-') + '</td>' +
+        '<td>' +
+          '<input type="datetime-local" class="expiry-input-sm" value="' + expiryVal + '" data-uid="' + u.id + '" id="expiry-' + u.id + '">' +
+          '<button class="btn btn-sm" style="background:#6366f1;color:#fff;border:none;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;font-weight:600;margin-left:4px;vertical-align:middle;" data-save-expiry="' + u.id + '">Save</button>' +
+          (blocked && !isSelf ? ' <button class="btn btn-primary btn-sm" data-unblock="' + u.id + '">Unblock</button>' : '') +
+          ' <button class="btn btn-outline btn-sm" data-edit="' + u.id + '">Edit</button>' +
+          (u.is_active ? (!isSelf ? ' <button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;font-weight:600;" data-deactivate="' + u.id + '">Deact</button>' : '') : ' <button class="btn btn-sm" style="background:#22c55e;color:#1a1a2e;border:none;border-radius:3px;padding:3px 8px;font-size:10px;cursor:pointer;font-weight:600;" data-activate="' + u.id + '">Act</button>') +
+          (!isSelf ? ' <button class="btn btn-danger btn-sm" data-delete="' + u.id + '">Del</button>' : '') +
+        '</td>' +
+      '</tr>';
+    }
+    document.getElementById('usersBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:20px">No users found</td></tr>';
+  }
+
+  function saveExpiry(uid, val) {
+    var body = val ? {expires_at: val} : {expires_at: null};
+    fetch(API + '/admin/users/' + uid + '/expire', {method:'POST', headers:getHeaders(), body:JSON.stringify(body)})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) { toast('Expiry saved'); loadUsers(); }
+        else { toast('Failed to save expiry', 'red'); }
+      }).catch(function() { toast('Failed to save expiry', 'red'); });
+  }
+
+  function createUser() {
+    var username = document.getElementById('newUsername').value.trim();
+    var password = document.getElementById('newPassword').value.trim();
+    var role = document.getElementById('newRole').value;
+    var expiresAt = document.getElementById('newExpiry').value;
+    if (!username || !password) { showAlert('userAlert','Username and password required','error'); return; }
+    var body = {username: username, password: password, role: role};
+    if (expiresAt) body.expires_at = expiresAt;
+    fetch(API + '/admin/users', {method:'POST', headers:getHeaders(), body:JSON.stringify(body)})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) {
+          toast('User created');
+          document.getElementById('newUsername').value = '';
+          document.getElementById('newPassword').value = '';
+          document.getElementById('newExpiry').value = '';
+          loadUsers();
+        } else {
+          showAlert('userAlert', d.detail || 'Failed','error');
+        }
+      }).catch(function() { showAlert('userAlert','Connection error','error'); });
+  }
+
+  function deleteUserConfirmed(uid) {
+    fetch(API + '/admin/users/' + uid, {method:'DELETE', headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) { toast('User deleted'); loadUsers(); }
+        else showAlert('userAlert', d.detail || 'Failed','error');
+      }).catch(function() { showAlert('userAlert','Error','error'); });
+  }
+
+  function saveUserPassword(uid, pw) {
+    fetch(API + '/admin/users/' + uid + '/password', {method:'POST', headers:getHeaders(), body:JSON.stringify({password: pw})})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) toast('Password updated');
+        else showAlert('userAlert', d.detail || 'Failed','error');
+        loadUsers();
+      });
+  }
+
+  function unblockUser(uid) {
+    fetch(API + '/admin/users/' + uid + '/unblock', {method:'POST', headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) { toast('User unblocked'); loadUsers(); }
+        else showAlert('userAlert', d.detail || 'Failed','error');
+      });
+  }
+
+  function toggleActive(uid, activate) {
+    fetch(API + '/admin/users/' + uid + '/toggle-active', {method:'POST', headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) { toast(activate ? 'User activated' : 'User deactivated'); loadUsers(); }
+        else showAlert('userAlert', d.detail || 'Failed', 'error');
+      }).catch(function() { toast('Error toggling user status', 'red'); });
+  }
+
+  function loadLogs() {
+    var service = document.getElementById('logService').value || 'divyadrishti-live';
+    var lines = parseInt(document.getElementById('logLines').value || '50');
+    fetch(API + '/admin/system/logs?service=' + service + '&lines=' + lines, {headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var box = document.getElementById('logBox');
+        if (!d.lines || d.lines.length === 0) { box.innerHTML = '<span style="color:#64748b">No log entries</span>'; return; }
+        var html = '';
+        for (var i = 0; i < d.lines.length; i++) {
+          var l = d.lines[i];
+          var cls = 'log-line';
+          if (l.indexOf(' ERROR') !== -1 || l.indexOf(' CRITICAL') !== -1) cls += ' log-error';
+          else if (l.indexOf(' WARNING') !== -1 || l.indexOf(' WARN') !== -1) cls += ' log-warn';
+          else if (l.indexOf(' INFO') !== -1) cls += ' log-info';
+          html += '<div class="' + cls + '">' + escHtml(l) + '</div>';
+        }
+        box.innerHTML = html;
+        box.scrollTop = box.scrollHeight;
+      }).catch(function() { document.getElementById('logBox').innerHTML = '<span style="color:#ef4444">Failed to load logs</span>'; });
+  }
+
+  function toggleAutoRefresh() {
+    if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+    if (document.getElementById('autoRefresh').checked) refreshTimer = setInterval(loadLogs, 10000);
+  }
+
+  function loadBackups() {
+    fetch(API + '/admin/system/backups', {headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var list = document.getElementById('backupList');
+        var countEl = document.getElementById('backupCount');
+        if (!d.backups || d.backups.length === 0) {
+          list.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:24px">No backups found.</div>';
+          if (countEl) countEl.textContent = '';
+          return;
+        }
+        if (countEl) countEl.textContent = '(' + d.backups.length + ')';
+        var html = '';
+        for (var i = 0; i < d.backups.length; i++) {
+          var b = d.backups[i];
+          var isLive = b.name.indexOf('DDlive') === 0 || b.name.indexOf('DDTools-live') === 0;
+          var isDev = b.name.indexOf('DDdev') === 0;
+          var srcTag = isLive ? 'LIVE' : (isDev ? 'DEV' : '');
+          var srcCls = isLive ? 'live' : (isDev ? 'dev' : '');
+          var iconChar = isLive ? '\u2693' : (isDev ? '\u2328' : '\u2B73');
+            var isRestorable = isLive || isDev;
+            html += '<div class="backup-item">' +
+            '<span class="backup-icon ' + srcCls + '">' + iconChar + '</span>' +
+            '<div class="backup-info">' +
+            '<div class="backup-name">' + escHtml(b.name) + (srcTag ? ' <span class="backup-source-tag ' + srcCls + '">' + srcTag + '</span>' : '') + '</div>' +
+            '<div class="backup-meta">' + b.date + ' &middot; ' + b.age_days + ' days old</div></div>' +
+            '<div class="backup-size">' + formatBytes(b.size) + '</div>' +
+            '<div class="backup-actions">' +
+            (isRestorable ? '<button class="backup-restore-btn" data-restore="' + escHtml(b.name) + '" title="Restore this backup">&#x21BA; Restore</button>' : '') +
+            '<button class="backup-del-btn" data-delbackup="' + escHtml(b.name) + '" title="Delete this backup">&#x2715;</button>' +
+            '</div></div>';
+        }
+        list.innerHTML = html;
+      }).catch(function() { document.getElementById('backupList').innerHTML = '<span style="color:var(--red);font-size:12px">Failed to load backups</span>'; });
+  }
+
+  function loadSchedules() {
+    fetch(API + '/admin/backup/schedules', {headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var container = document.getElementById('schedulesContainer');
+        if (!d.schedules || d.schedules.length === 0) {
+          container.innerHTML = '<div style="font-size:12px;color:#64748b;text-align:center;padding:20px">No schedules configured. Click "+ Add Schedule" to create one.</div>';
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < d.schedules.length; i++) {
+          html += renderSchedule(d.schedules[i]);
+        }
+        container.innerHTML = html;
+      }).catch(function() { document.getElementById('schedulesContainer').innerHTML = '<span style="color:#ef4444;font-size:12px">Failed to load schedules</span>'; });
+  }
+
+  function renderSchedule(s) {
+    var freqOpts = ['daily','weekly','monthly'];
+    var destOpts = ['local','drive','both'];
+    var srcOpts = ['live','dev','both'];
+    var freqHtml = '', destHtml = '', srcHtml = '';
+    for (var f = 0; f < freqOpts.length; f++) {
+      freqHtml += '<button type="button" class="toggle-opt' + (s.frequency === freqOpts[f] ? ' active' : '') + '" data-sch-freq="' + s.id + '" data-val="' + freqOpts[f] + '">' + freqOpts[f].charAt(0).toUpperCase() + freqOpts[f].slice(1) + '</button>';
+    }
+    for (var d = 0; d < destOpts.length; d++) {
+      var destLabel = destOpts[d] === 'both' ? 'Both' : destOpts[d] === 'local' ? 'Local' : 'Drive';
+      destHtml += '<button type="button" class="toggle-opt' + (s.destination === destOpts[d] ? ' active' : '') + '" data-sch-dest="' + s.id + '" data-val="' + destOpts[d] + '">' + destLabel + '</button>';
+    }
+    for (var sr = 0; sr < srcOpts.length; sr++) {
+      var srcLabel = srcOpts[sr] === 'both' ? 'Both' : srcOpts[sr].charAt(0).toUpperCase() + srcOpts[sr].slice(1);
+      srcHtml += '<button type="button" class="toggle-opt' + (s.source === srcOpts[sr] ? ' active' : '') + '" data-sch-src="' + s.id + '" data-val="' + srcOpts[sr] + '">' + srcLabel + '</button>';
+    }
+
+    var showDow = s.frequency === 'weekly';
+    var showDom = s.frequency === 'monthly';
+
+    var srcName = s.source === 'both' ? 'Live + Dev' : s.source.charAt(0).toUpperCase() + s.source.slice(1);
+    var freqLabel = s.frequency.charAt(0).toUpperCase() + s.frequency.slice(1) + ' Auto';
+    return '<div class="schedule-card" data-schid="' + s.id + '">' +
+      '<div class="schedule-header">' +
+      '<div class="schedule-title">' +
+      freqLabel + ' \u2192 ' + srcName +
+      ' <span class="schedule-badge ' + (s.enabled ? 'enabled' : 'disabled') + '">' + (s.enabled ? 'Active' : 'Paused') + '</span>' +
+      '<span class="schedule-next">' + (s.next_run ? 'Next: <strong>' + s.next_run + '</strong>' : '') + '</span>' +
+      '</div>' +
+      '<div class="schedule-actions">' +
+      '<button class="schedule-save-btn" data-schsave="' + s.id + '">Save</button>' +
+      '<button class="schedule-del-btn" data-schdel="' + s.id + '">Delete</button>' +
+      '</div>' +
+      '</div>' +
+      '<div class="schedule-form">' +
+      '<div class="form-group"><label>Source</label><div class="toggle-group" data-sch-field="source" data-schid="' + s.id + '">' + srcHtml + '</div></div>' +
+      '<div class="form-group"><label>Frequency</label><div class="toggle-group" data-sch-field="frequency" data-schid="' + s.id + '">' + freqHtml + '</div></div>' +
+      '<div class="form-group"><label>Destination</label><div class="toggle-group" data-sch-field="destination" data-schid="' + s.id + '">' + destHtml + '</div></div>' +
+      '<div class="form-group" data-sch-timewrap="' + s.id + '"><label>Time</label><input type="time" class="sch-time" data-schid="' + s.id + '" value="' + (s.scheduled_time || '02:00') + '"></div>' +
+      '<div class="form-group' + (showDow ? '' : ' hidden') + '" data-sch-dowwrap="' + s.id + '"><label>Day of Week</label><select class="sch-dow" data-schid="' + s.id + '">' +
+        ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(function(n, i) { return '<option value="' + i + '"' + (s.day_of_week === i ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="form-group' + (showDom ? '' : ' hidden') + '" data-sch-domwrap="' + s.id + '"><label>Day of Month</label><input type="number" class="sch-dom" data-schid="' + s.id + '" value="' + (s.day_of_month || 1) + '" min="1" max="31"></div>' +
+      '<div class="form-group"><label>Enabled</label><input type="checkbox" class="sch-enabled" data-schid="' + s.id + '"' + (s.enabled ? ' checked' : '') + ' style="width:auto;margin-top:4px"></div>' +
+      '</div>' +
+      '</div>';
+  }
+
+  function deleteBackupFile(filename) {
+    fetch(API + '/admin/backup/delete', {
+      method: 'DELETE',
+      headers: getHeaders(),
+      body: JSON.stringify({filename: filename})
+    }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast('Backup deleted: ' + filename);
+        loadBackups();
+      } else {
+        toast(d.detail || 'Failed to delete', 'red');
+      }
+    }).catch(function() { toast('Failed to delete backup', 'red'); });
+  }
+
+  function restoreBackup(filename) {
+    var names = {DDlive:'Live',DDdev:'Dev','DDTools-live':'Live'};
+    var label = 'Restore';
+    fetch(API + '/admin/backup/restore', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({filename: filename})
+    }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        showActionOutput('Restore: ' + filename, d.action_id);
+      } else {
+        toast('Failed: ' + (d.detail || 'Unknown error'), 'red');
+      }
+    }).catch(function() { toast('Failed to start restore', 'red'); });
+  }
+
+  function runManualBackup() {
+    var source = document.querySelector('#manualSourceGroup .toggle-opt.active').getAttribute('data-val');
+    var dest = document.querySelector('#manualDestGroup .toggle-opt.active').getAttribute('data-val');
+    var names = {live:'Live Backup', dev:'Dev Backup'};
+    var destLabels = {local:'Local Only', drive:'Drive Only', both:'Both'};
+    fetch(API + '/admin/backup/run', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({source: source, destination: dest})
+    }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        showActionOutput(names[source] + ' (' + destLabels[dest] + ')', d.action_id);
+      } else {
+        toast('Failed: ' + (d.detail || 'Unknown error'), 'red');
+      }
+    }).catch(function() { toast('Failed to start backup', 'red'); });
+  }
+
+  function collectScheduleForm(scheduleId) {
+    var data = {id: scheduleId};
+    var el = document.querySelector('.schedule-card[data-schid="' + scheduleId + '"]');
+    if (!el) return null;
+    var sourceBtn = el.querySelector('.toggle-group[data-sch-field="source"] .toggle-opt.active');
+    var freqBtn = el.querySelector('.toggle-group[data-sch-field="frequency"] .toggle-opt.active');
+    var destBtn = el.querySelector('.toggle-group[data-sch-field="destination"] .toggle-opt.active');
+    data.source = sourceBtn ? sourceBtn.getAttribute('data-val') : 'live';
+    data.frequency = freqBtn ? freqBtn.getAttribute('data-val') : 'manual';
+    data.destination = destBtn ? destBtn.getAttribute('data-val') : 'both';
+    data.scheduled_time = el.querySelector('.sch-time[data-schid="' + scheduleId + '"]').value || '02:00';
+    var dowEl = el.querySelector('.sch-dow[data-schid="' + scheduleId + '"]');
+    data.day_of_week = dowEl ? parseInt(dowEl.value) : null;
+    var domEl = el.querySelector('.sch-dom[data-schid="' + scheduleId + '"]');
+    data.day_of_month = domEl ? parseInt(domEl.value) : null;
+    data.enabled = el.querySelector('.sch-enabled[data-schid="' + scheduleId + '"]').checked;
+    return data;
+  }
+
+  function saveSchedule(scheduleId) {
+    var data = collectScheduleForm(scheduleId);
+    if (!data) return;
+    var method = 'POST';
+    var url = API + '/admin/backup/schedules';
+    if (scheduleId > 0) {
+      method = 'PUT';
+      url = API + '/admin/backup/schedules/' + scheduleId;
+    }
+    fetch(url, {
+      method: method,
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast('Schedule saved');
+        loadSchedules();
+      } else {
+        toast(d.detail || 'Failed to save schedule', 'red');
+      }
+    }).catch(function() { toast('Failed to save schedule', 'red'); });
+  }
+
+  function deleteSchedule(scheduleId) {
+    fetch(API + '/admin/backup/schedules/' + scheduleId, {
+      method: 'DELETE',
+      headers: getHeaders()
+    }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast('Schedule deleted');
+        loadSchedules();
+      } else {
+        toast(d.detail || 'Failed to delete schedule', 'red');
+      }
+    }).catch(function() { toast('Failed to delete schedule', 'red'); });
+  }
+
+  function clearLogs() {
+    var svc = document.getElementById('clearService').value || 'divyadrishti-live';
+    fetch(API + '/admin/system/log/clear?service=' + svc, {method:'POST', headers:getHeaders()})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) toast('Logs cleared for ' + svc);
+        else toast('Failed to clear logs', 'red');
+        loadLogs();
+      }).catch(function() { toast('Failed to clear logs', 'red'); });
+  }
+
+  function goHome() { window.location.href = '/'; }
+  function doLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    window.location.href = '/login.html';
+  }
+  function toggleSidebar(open) {
+    var s = document.querySelector('.sidebar');
+    var o = document.getElementById('sidebarOverlay');
+    if (open === undefined) open = !s.classList.contains('open');
+    s.classList.toggle('open', open);
+    o.classList.toggle('active', open);
+  }
+
+  function init() {
+    var token = localStorage.getItem('token');
+    var role = localStorage.getItem('role');
+    var user = localStorage.getItem('username');
+    if (!token) { window.location.href = '/login.html'; return; }
+    if (role !== 'admin') { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#ef4444">Admin access only</div>'; return; }
+    document.getElementById('userName').textContent = user || '';
+    document.getElementById('userRole').textContent = role || '';
+
+    var navItems = document.querySelectorAll('.nav-item[data-section]');
+    for (var ni = 0; ni < navItems.length; ni++) {
+      navItems[ni].addEventListener('click', (function(n) { return function() { showSection(n); toggleSidebar(false); }; })(navItems[ni].getAttribute('data-section')));
+    }
+
+    document.getElementById('goHomeBtn').addEventListener('click', function() { toggleSidebar(false); goHome(); });
+    document.getElementById('logoutBtn').addEventListener('click', function() { toggleSidebar(false); doLogout(); });
+    document.getElementById('modalCancel').addEventListener('click', closeModal);
+    document.getElementById('modalConfirm').addEventListener('click', doModalConfirm);
+    document.getElementById('refreshStatus').addEventListener('click', loadStatus);
+    document.getElementById('refreshLogs').addEventListener('click', loadLogs);
+    document.getElementById('refreshBackups').addEventListener('click', loadBackups);
+    document.getElementById('runManualBackupBtn').addEventListener('click', runManualBackup);
+    document.getElementById('manualSourceGroup').addEventListener('click', function(e) {
+      var btn = e.target.closest('.toggle-opt');
+      if (btn) { this.querySelectorAll('.toggle-opt').forEach(function(b) { b.classList.remove('active'); }); btn.classList.add('active'); }
+    });
+    document.getElementById('manualDestGroup').addEventListener('click', function(e) {
+      var btn = e.target.closest('.toggle-opt');
+      if (btn) { this.querySelectorAll('.toggle-opt').forEach(function(b) { b.classList.remove('active'); }); btn.classList.add('active'); }
+    });
+    document.getElementById('addScheduleBtn').addEventListener('click', function() {
+      var container = document.getElementById('schedulesContainer');
+      // Create a temporary schedule object with default values
+      var temp = {id: 'new', source: 'live', frequency: 'daily', destination: 'both', scheduled_time: '02:00', day_of_week: 0, day_of_month: 1, enabled: true, next_run: null};
+      if (!container.querySelector('[data-schid="new"]')) {
+        var div = document.createElement('div');
+        div.innerHTML = renderSchedule(temp);
+        container.insertBefore(div.firstElementChild, container.firstChild);
+      }
+    });
+    // Delegate events for schedule cards and backup deletions
+    document.getElementById('schedulesContainer').addEventListener('click', function(e) {
+      var toggleBtn = e.target.closest('.toggle-opt');
+      if (toggleBtn) {
+        var group = toggleBtn.parentNode;
+        group.querySelectorAll('.toggle-opt').forEach(function(b) { b.classList.remove('active'); });
+        toggleBtn.classList.add('active');
+        var scheduleId = toggleBtn.getAttribute('data-sch-freq') || toggleBtn.getAttribute('data-sch-dest') || toggleBtn.getAttribute('data-sch-src');
+        if (scheduleId) {
+          var freq = group.querySelector('.toggle-opt.active[data-sch-freq]');
+          if (freq) {
+            var val = freq.getAttribute('data-val');
+            var showDow = val === 'weekly';
+            var showDom = val === 'monthly';
+            var card = document.querySelector('.schedule-card[data-schid="' + scheduleId + '"]');
+            if (card) {
+              var tw = card.querySelector('[data-sch-timewrap="' + scheduleId + '"]');
+              var dw = card.querySelector('[data-sch-dowwrap="' + scheduleId + '"]');
+              var mw = card.querySelector('[data-sch-domwrap="' + scheduleId + '"]');
+              if (tw) tw.classList.remove('hidden');
+              if (dw) dw.classList.toggle('hidden', !showDow);
+              if (mw) mw.classList.toggle('hidden', !showDom);
+            }
+          }
+        }
+        return;
+      }
+      var saveBtn = e.target.closest('[data-schsave]');
+      if (saveBtn) {
+        var sid = saveBtn.getAttribute('data-schsave');
+        if (sid === 'new') {
+          var data = collectScheduleForm('new');
+          if (data) {
+            fetch(API + '/admin/backup/schedules', {
+              method: 'POST', headers: getHeaders(),
+              body: JSON.stringify(data)
+            }).then(function(r) { return r.json(); })
+            .then(function(d) {
+              if (d.success) { toast('Schedule created'); loadSchedules(); }
+              else { toast(d.detail || 'Failed', 'red'); }
+            }).catch(function() { toast('Failed to create schedule', 'red'); });
+          }
+        } else {
+          saveSchedule(parseInt(sid));
+        }
+        return;
+      }
+      var delBtn = e.target.closest('[data-schdel]');
+      if (delBtn) {
+        var sid = delBtn.getAttribute('data-schdel');
+        if (sid === 'new') {
+          var card = delBtn.closest('.schedule-card');
+          if (card) card.remove();
+          var c = document.getElementById('schedulesContainer');
+          if (!c.querySelector('.schedule-card')) {
+            c.innerHTML = '<div style="font-size:12px;color:#64748b;text-align:center;padding:20px">No schedules configured. Click "+ Add Schedule" to create one.</div>';
+          }
+        } else {
+          deleteSchedule(parseInt(sid));
+        }
+        return;
+      }
+    });
+    document.getElementById('backupList').addEventListener('click', function(e) {
+      var restoreBtn = e.target.closest('[data-restore]');
+      if (restoreBtn) {
+        var filename = restoreBtn.getAttribute('data-restore');
+        var isLive = filename.indexOf('DDlive') === 0 || filename.indexOf('DDTools-live') === 0;
+        var targetLabel = isLive ? 'Live (Production)' : 'Dev (Staging)';
+        showModal({
+          icon: '\u21BA', title: 'Restore Backup?',
+          body: 'Restore <strong>' + escHtml(filename) + '</strong> to <strong>' + targetLabel + '</strong>? This will stop the service, overwrite all files, and restart. This cannot be undone.',
+          confirmClass: 'btn btn-primary',
+          action: {type: 'restoreBackup', filename: filename}
+        });
+        pendingAction = {type: 'restoreBackup', filename: filename};
+        return;
+      }
+      var delBtn = e.target.closest('[data-delbackup]');
+      if (delBtn) {
+        var filename = delBtn.getAttribute('data-delbackup');
+        showModal({
+          icon: '\u2717', title: 'Delete Backup?',
+          body: 'Delete <strong>' + escHtml(filename) + '</strong> from local storage? This cannot be undone.',
+          confirmClass: 'btn btn-danger',
+          action: {type: 'deleteBackup', filename: filename}
+        });
+        pendingAction = {type: 'deleteBackup', filename: filename};
+      }
+    });
+    document.getElementById('autoRefresh').addEventListener('change', toggleAutoRefresh);
+    document.getElementById('userSearch').addEventListener('input', renderUsers);
+    document.getElementById('createUserBtn').addEventListener('click', createUser);
+    document.getElementById('hamburgerBtn').addEventListener('click', function() { toggleSidebar(true); });
+    document.getElementById('sidebarOverlay').addEventListener('click', function() { toggleSidebar(false); });
+
+    document.getElementById('actionRestart').addEventListener('click', function() {
+      showModal({icon:'\u21BB', title:'Restart Services?', body:'Restart both divyadrishti-live and divyadrishti-tunnel. Progress shown inline.', action:{type:'restart'}, confirmClass:'btn btn-primary'});
+    });
+    document.getElementById('actionBackupLive').addEventListener('click', function() { showSection('backups'); });
+    document.getElementById('actionBackupDev').addEventListener('click', function() { showSection('backups'); });
+    document.getElementById('actionStop').addEventListener('click', function() {
+      showModal({icon:'\u25A0', title:'Stop Services?', body:'The website will go offline until you start it again.', action:{type:'stop'}, confirmClass:'btn btn-danger'});
+    });
+    document.getElementById('actionStart').addEventListener('click', function() {
+      showModal({icon:'\u25B6', title:'Start Services?', body:'Resume both divyadrishti-live and divyadrishti-tunnel.', action:{type:'start'}, confirmClass:'btn btn-primary'});
+    });
+
+    document.getElementById('deployBtn').addEventListener('click', function() {
+      showModal({icon:'\u2B95', title:'Deploy to Live?', body:'Sync files from E:\\ to D:\\, install deps, then restart services. Progress will be shown inline.', action:{type:'deploy'}, confirmClass:'btn btn-primary'});
+    });
+    document.getElementById('clearLogsBtn').addEventListener('click', function() {
+      showModal({icon:'\u270F', title:'Clear Logs?', body:'This will empty the log file for the selected service.', action:{type:'clearLogs'}, confirmClass:'btn btn-danger'});
+    });
+
+    document.getElementById('usersBody').addEventListener('click', function(e) {
+      var saveBtn = e.target.getAttribute('data-save-expiry');
+      if (saveBtn) {
+        var uid = parseInt(saveBtn);
+        var inp = document.getElementById('expiry-' + uid);
+        var val = inp ? inp.value : '';
+        if (val && new Date(val) < new Date()) {
+          toast('Expiry cannot be in the past', 'red');
+          return;
+        }
+        saveExpiry(uid, val || null);
+        return;
+      }
+      var deact = e.target.getAttribute('data-deactivate');
+      if (deact) {
+        toggleActive(parseInt(deact), false);
+        return;
+      }
+      var act = e.target.getAttribute('data-activate');
+      if (act) {
+        toggleActive(parseInt(act), true);
+        return;
+      }
+      var unblock = e.target.getAttribute('data-unblock');
+      if (unblock) { unblockUser(parseInt(unblock)); return; }
+      var editBtn = e.target.getAttribute('data-edit');
+      if (editBtn) {
+        var uid = parseInt(editBtn);
+        var u = allUsers.find(function(x) { return x.id === uid; });
+        if (!u) return;
+        showModal({
+          icon:'\u270F',
+          title:'Change Password',
+          body:'<span style="font-size:13px;color:#94a3b8">' + escHtml(u.username) + '</span>',
+          input: true,
+          inputPlaceholder: 'Enter password',
+          action: {type:'editUser', userId: uid},
+          confirmClass: 'btn btn-primary'
+        });
+        return;
+      }
+      var deleteBtn = e.target.getAttribute('data-delete');
+      if (deleteBtn) {
+        var uid = parseInt(deleteBtn);
+        showModal({icon:'\u2717', title:'Delete User?', body:'This will permanently delete user #' + uid + '. This cannot be undone.', action:{type:'deleteUser', userId:uid}, confirmClass:'btn btn-danger'});
+      }
+    });
+
+    loadStatus();
+    fetch(API + '/auth/me', {headers: getHeaders()}).then(function() {
+      loadUsers();
+    }).catch(function() {
+      loadUsers();
+    });
+    setInterval(loadStatus, 15000);
+    setInterval(function() {
+      fetch(API + '/auth/heartbeat', {method:'POST', headers: getHeaders()}).catch(function(){});
+    }, 60000);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

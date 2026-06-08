@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: divyadrishti
+    runtime: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: SECRET_KEY
+        value: 69ee17effb6cd80a0b7007e444d3e12483e695350ad308346bbd4a502d7c8e16

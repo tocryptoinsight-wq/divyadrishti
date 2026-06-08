@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+*.pyo
+*.db
+*.db-shm
+*.db-wal
+.env
+.git
+.gitignore
+README.md
+*pytest*
+.venv
+restart/helper.log
+restart/current_port.json
