@@ -2387,7 +2387,17 @@ async function changeSymbol(symbol) {
   _computedTrade = {};
   pendingScroll = true;
   _loadDrawings();
-  refreshAll().then(function() { if (reqId === _changeSymbolReq) startChartPolling(); });
+  // Run chart analysis + screener in parallel
+  _chartLoadedForSymbol = false;
+  document.getElementById('lastUpdate').textContent = 'Loading...';
+  var _anP = fetchAnalysis();
+  var _scP = fetchScreener();
+  _anP.then(function(success) {
+    if (success && reqId === _changeSymbolReq) startChartPolling();
+  });
+  Promise.all([_anP, _scP]).then(function() {
+    document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  });
   // Prioritize current symbol in background queue
   var _ci = _tbBgQueue.indexOf(currentSymbol);
   if (_ci > 0) _tbBgQueue.splice(_ci, 1);
@@ -5028,6 +5038,11 @@ async function fetchChartData() {
     if (!resp.ok) { setConnStatus(false); return; }
     const data = await resp.json();
     setConnStatus(true);
+    if (!_chartLoadedForSymbol) {
+      _chartLoadedForSymbol = true;
+      _tbProcessing = false;
+      document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');});
+    }
     _lastPrices[currentSymbol] = data.last_price || 0;
     const resSec = ({ '5': 300, '15': 900, '60': 3600 })[document.getElementById('resolutionSelect').value] || 300;
     const now = Math.floor(Date.now() / 1000);
@@ -5499,6 +5514,7 @@ var NOTIFY_COOLDOWN = 120000; // 2 min
 var _tbBgActive = 0, _tbBgParallel = 2, _tbBgLive = false;
 var _tbNotifStart = Date.now(), _tbNotifDelay = 20000;
 var _tbProcessing = false;
+var _chartLoadedForSymbol = false;
 
 function _tbInit() {
   setInterval(_tbOnTick, 1000);
@@ -5534,7 +5550,7 @@ async function _tbProcessNextBg() {
         var _al = _tbLabel(_sr);
         if (_al !== '-' && _al !== existing.label) _tbNotify(sym, _al);
       }
-      if (sym === currentSymbol) { _tbProcessing = false; document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');}); _tbUpdateLegendState(); _updateScreenerRow(sym); }
+      if (sym === currentSymbol) { if (_chartLoadedForSymbol) { _tbProcessing = false; document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');}); } _tbUpdateLegendState(); _updateScreenerRow(sym); }
       return;
     }
     var e10 = data.ema.ema10, e20 = data.ema.ema20, e50 = _tbEMA(c, 50);
@@ -5558,7 +5574,7 @@ async function _tbProcessNextBg() {
     _updateScreenerRow(sym);
     _renderScreenerTable();
   } catch (e) {} finally {
-    if (sym === currentSymbol) { _tbProcessing = false; document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');}); _tbUpdateLegendState(); }
+    if (sym === currentSymbol) { if (_chartLoadedForSymbol) { _tbProcessing = false; document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');}); } _tbUpdateLegendState(); }
     if (_tbBgQueue.indexOf(sym) === -1) _tbBgQueue.push(sym);
     _tbBgActive--;
   }
