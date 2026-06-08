@@ -4454,6 +4454,7 @@ async function removeAccount(idx) {
 }
 
 let _balanceHidden = localStorage.getItem('balanceHidden') === 'true';
+let _lastOutboundIp = '';
 function toggleBalance() {
   _balanceHidden = !_balanceHidden;
   localStorage.setItem('balanceHidden', _balanceHidden);
@@ -5119,6 +5120,8 @@ async function updateUptime() {
       const m = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
       const sec = String(s % 60).padStart(2,'0');
       document.getElementById('uptimeDisplay').textContent = h + ':' + m + ':' + sec;
+      const ipEl = document.getElementById('outboundIpSidebar');
+      if (ipEl && _lastOutboundIp) ipEl.textContent = '[' + _lastOutboundIp + ']';
       return;
     }
     const r = await fetch('/health?_=' + Date.now());
@@ -5129,8 +5132,9 @@ async function updateUptime() {
     const sec = String(s % 60).padStart(2,'0');
     document.getElementById('uptimeDisplay').textContent = h + ':' + m + ':' + sec;
     _updatePortDisplay(d.port);
+    _lastOutboundIp = d.outbound_ip || '';
     const ipEl = document.getElementById('outboundIpSidebar');
-    if (ipEl) ipEl.textContent = '[' + (d.outbound_ip || '') + ']';
+    if (ipEl) ipEl.textContent = '[' + _lastOutboundIp + ']';
   } catch(_) {}
 }
 function syncOverlay() {
@@ -5437,6 +5441,10 @@ document.getElementById('balanceText').onclick = toggleBalance;
   setInterval(updateLiveTrading, 5000);
   updateUptime();
   setInterval(updateUptime, 5000);
+  setInterval(function() {
+    const ipEl = document.getElementById('outboundIpSidebar');
+    if (ipEl && _lastOutboundIp && ipEl.textContent !== '[' + _lastOutboundIp + ']') ipEl.textContent = '[' + _lastOutboundIp + ']';
+  }, 1000);
   sendHeartbeat();
   setInterval(sendHeartbeat, 60000);
   startChartPolling();
