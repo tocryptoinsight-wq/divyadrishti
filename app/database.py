@@ -101,7 +101,7 @@ if _IS_PG:
             )
         """)
         cur.execute("SELECT COUNT(*) AS cnt FROM users")
-        if cur.fetchone()["cnt"] == 0:
+        if cur.fetchone()[0] == 0:
             _seed_users(conn)
         conn.commit()
         cur.close()
