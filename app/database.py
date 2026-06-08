@@ -12,6 +12,8 @@ if _IS_PG:
     import psycopg2
     import psycopg2.extras
 
+    _DB_PATH = None
+
     def _get_conn():
         if not hasattr(_thread_local, "conn") or _thread_local.conn is None:
             _thread_local.conn = psycopg2.connect(_DATABASE_URL, sslmode="require")

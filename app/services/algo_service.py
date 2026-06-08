@@ -628,13 +628,16 @@ def _persist_algo_state(username: str, symbol: str):
 
 def _restore_algo_state():
     """Restore all algo states from DB and restart loops for in_trade states."""
-    import sqlite3
-    from app.database import _DB_PATH
+    from app.database import _DB_PATH, query
     try:
-        conn = sqlite3.connect(str(_DB_PATH))
-        conn.row_factory = sqlite3.Row
-        rows = conn.execute("SELECT username, symbol, state_json, credentials_json, setup_json FROM algo_state").fetchall()
-        conn.close()
+        if _DB_PATH:
+            import sqlite3
+            conn = sqlite3.connect(str(_DB_PATH))
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT username, symbol, state_json, credentials_json, setup_json FROM algo_state").fetchall()
+            conn.close()
+        else:
+            rows = query("SELECT username, symbol, state_json, credentials_json, setup_json FROM algo_state")
         loop = asyncio.get_event_loop()
         for row in rows:
             uname = row["username"]
