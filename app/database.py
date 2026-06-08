@@ -18,6 +18,16 @@ if _IS_PG:
         if not hasattr(_thread_local, "conn") or _thread_local.conn is None:
             _thread_local.conn = psycopg2.connect(_DATABASE_URL, sslmode="require")
             _thread_local.conn.autocommit = False
+        elif _thread_local.conn.closed:
+            _thread_local.conn = psycopg2.connect(_DATABASE_URL, sslmode="require")
+            _thread_local.conn.autocommit = False
+        else:
+            try:
+                cur = _thread_local.conn.cursor()
+                cur.execute("SELECT 1")
+                cur.close()
+            except Exception:
+                _thread_local.conn.rollback()
         return _thread_local.conn
 
     def _fix(sql):
@@ -296,6 +306,7 @@ def _retry(fn):
                 time.sleep(_RETRY_DELAY * (2 ** attempt))
                 _thread_local.conn = None
                 continue
+            _thread_local.conn = None
             raise
 
 
