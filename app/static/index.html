@@ -4453,6 +4453,7 @@ async function removeAccount(idx) {
 }
 
 let _balanceHidden = localStorage.getItem('balanceHidden') === 'true';
+let _outboundIp = null;
 function toggleBalance() {
   _balanceHidden = !_balanceHidden;
   localStorage.setItem('balanceHidden', _balanceHidden);
@@ -4521,7 +4522,7 @@ function updateBalanceDisplay() {
     for (const [curr, tot] of Object.entries(bals)) {
       if (tot > 0) pretty.push('$ ' + tot.toFixed(2));
     }
-    el.textContent = pretty.length ? 'Balance: ' + pretty.join(' | ') : '...';
+    el.textContent = pretty.length ? 'Balance: ' + pretty.join(' | ') + (_outboundIp ? ' [' + _outboundIp + ']' : '') : '...';
   }
   el.style.cursor = 'pointer';
   // Mode label (always visible, never hidable)
@@ -5128,6 +5129,8 @@ async function updateUptime() {
     const sec = String(s % 60).padStart(2,'0');
     document.getElementById('uptimeDisplay').textContent = h + ':' + m + ':' + sec;
     _updatePortDisplay(d.port);
+    _outboundIp = d.outbound_ip || null;
+    updateBalanceDisplay();
   } catch(_) {}
 }
 function syncOverlay() {

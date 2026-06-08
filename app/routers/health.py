@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 import time
@@ -14,6 +15,27 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["health"])
 
 _START_TIME = time.time()
+_OUTBOUND_IP: str | None = None
+_OUTBOUND_IP_TS: float = 0
+_OUTBOUND_IP_LOCK = asyncio.Lock()
+
+
+async def _get_outbound_ip() -> str | None:
+    global _OUTBOUND_IP, _OUTBOUND_IP_TS
+    now = time.time()
+    if _OUTBOUND_IP and now - _OUTBOUND_IP_TS < 1800:
+        return _OUTBOUND_IP
+    async with _OUTBOUND_IP_LOCK:
+        if _OUTBOUND_IP and now - _OUTBOUND_IP_TS < 1800:
+            return _OUTBOUND_IP
+        try:
+            async with httpx.AsyncClient(timeout=5) as c:
+                r = await c.get("https://api.ipify.org?format=json")
+                _OUTBOUND_IP = r.json().get("ip")
+                _OUTBOUND_IP_TS = time.time()
+        except Exception:
+            logger.warning("Failed to fetch outbound IP", exc_info=True)
+    return _OUTBOUND_IP
 
 
 def _get_port() -> int | None:
@@ -25,12 +47,14 @@ def _get_port() -> int | None:
 
 @router.get("/health")
 async def health_check():
+    outbound_ip = await _get_outbound_ip()
     resp = JSONResponse({
         "status": "ok",
         "app": settings.app_name,
         "version": settings.app_version,
         "uptime": int(time.time() - _START_TIME),
         "port": _get_port(),
+        "outbound_ip": outbound_ip,
     })
     resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     resp.headers["Pragma"] = "no-cache"
