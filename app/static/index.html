@@ -3414,13 +3414,13 @@ async function _pollScreenerPrices() {
       if (!p) continue;
       const cells = tr.querySelectorAll('td');
       if (cells.length < 4) continue;
-      if (p.last_price != null) {
-        cells[2].textContent = p.last_price.toFixed(2);
-      }
       if (p.price_change_24h != null) {
         const chg = p.price_change_24h;
-        cells[3].textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
-        cells[3].style.color = chg >= 0 ? '#22c55e' : '#ef4444';
+        cells[1].textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
+        cells[1].style.color = chg >= 0 ? '#22c55e' : '#ef4444';
+      }
+      if (p.last_price != null) {
+        cells[3].textContent = p.last_price.toFixed(2);
       }
     }
   } catch (_) {}
