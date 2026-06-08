@@ -333,18 +333,20 @@ def execute(sql: str, params: tuple = ()) -> int:
             cur = conn.cursor()
             cur.execute(_fix(sql), params)
             conn.commit()
-            last_id = cur.fetchone()
-            cur.close()
-            if last_id:
-                return last_id[0]
             try:
-                cur2 = conn.cursor()
-                cur2.execute("SELECT LASTVAL()")
-                val = cur2.fetchone()[0]
-                cur2.close()
-                return val or 0
+                last_id = cur.fetchone()
+                if last_id:
+                    return last_id[0]
+            except Exception:
+                pass
+            try:
+                cur.execute("SELECT LASTVAL()")
+                val = cur.fetchone()
+                return val[0] if val else 0
             except Exception:
                 return 0
+            finally:
+                cur.close()
         cur = conn.execute(sql, params)
         conn.commit()
         return cur.lastrowid or 0
