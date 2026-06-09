@@ -9,8 +9,6 @@ from fastapi import APIRouter, Depends
 
 from app.auth.deps import require_admin_local
 
-from app.services import algo_service
-
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["restart"])
@@ -25,7 +23,6 @@ def _pm2_name(port: str) -> str | None:
 @router.post("/restart")
 async def restart_server(_admin: dict = Depends(require_admin_local)):
     async def _delayed_restart():
-        await algo_service.pause_all()
         await asyncio.sleep(0.3)
 
         port = str(_server.config.port) if _server and _server.config else "8000"
