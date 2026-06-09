@@ -23,7 +23,6 @@ from app.engine.signal import (
     rsi_text,
     signal_logic,
 )
-from app.services import algo_service
 from app.indicators.adx import dmi
 from app.indicators.ema import ema
 from app.indicators.rsi import rsi as rsi_func
@@ -32,6 +31,14 @@ from app.indicators.trend import trend_color, trend_state, trend_status
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["analysis"])
+
+def _check_exit(is_long: bool, close, ema10, ema20) -> bool:
+    if len(close) < 3 or len(ema10) < 3 or len(ema20) < 3:
+        return False
+    c = close[-1]
+    e20 = ema20[-1]
+    return c < e20 if is_long else c > e20
+
 
 RESOLUTION_MAP = {
     "5": ("5m", 300),
@@ -254,7 +261,7 @@ def _compute_historical_boxes(data_5m, analysis_5m, data_15m, analysis_15m, data
                             hit_2r = True
 
                     if hit_2r and k >= i + 2:
-                        if algo_service._check_exit(buy_entry, close_5m[:k + 1], ema10_5m[:k + 1], ema20_5m[:k + 1]):
+                        if _check_exit(buy_entry, close_5m[:k + 1], ema10_5m[:k + 1], ema20_5m[:k + 1]):
                             exit_time = int(times_5m[k + 1]) if k + 1 < n else int(times_5m[k])
                             exit_price = float(close_5m[k])
                             exit_reason = "ema"
@@ -652,16 +659,13 @@ async def sync_screener_top30(current_user: dict | None = Depends(get_current_us
                 top30_resolved.append(resolved)
         except Exception:
             pass
-    algo_status = algo_service.get_status(username=username)
-    active_trade_syms = {sym for sym, st in algo_status.items() if st.get("active")}
     current = set(_user_symbols(username))
-    protected = current & active_trade_syms
     top30_set = set(top30_resolved)
-    keep = protected | top30_set
-    to_remove = current - keep
-    remaining_slots = max(0, 30 - len(protected))
-    top30_new = [s for s in top30_resolved if s not in protected][:remaining_slots]
-    final = sorted(protected | set(top30_new))
+    keep = current & top30_set
+    to_remove = current - top30_set
+    remaining_slots = max(0, 30 - len(current))
+    top30_new = [s for s in top30_resolved if s not in current][:remaining_slots]
+    final = sorted(top30_set | set(top30_new))
     for sym in to_remove:
         execute("DELETE FROM user_screener_symbols WHERE username = ? AND symbol = ?", (username, sym))
     for sym in final:

@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from app.auth.deps import decode_token
 from app.config import settings
 from app.database import close_db, init_db
-from app.routers import adv_indicators, algo, analysis, auth, admin, drawings, health, manual_trail, trading
+from app.routers import adv_indicators, analysis, auth, admin, drawings, health, manual_trail, trading
 from restart.router import router as restart_router
 
 
@@ -23,8 +23,6 @@ def _static_dir() -> str:
 async def lifespan(app: FastAPI):
     # Startup: init DB
     init_db()
-    from app.services.algo_service import _restore_algo_state
-    _restore_algo_state()
     from app.services.alert_service import start_monitors
     await start_monitors(app)
     yield
@@ -32,8 +30,6 @@ async def lifespan(app: FastAPI):
     await delta_client.close()
     await _close_auth_client()
     await trading._SHARED_CLIENT.aclose()
-    from app.services.algo_service import _SHARED_CLIENT as algo_client
-    await algo_client.aclose()
     close_db()
 
 
@@ -44,7 +40,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(algo.router)
 app.include_router(health.router)
 app.include_router(restart_router)
 app.include_router(analysis.router)

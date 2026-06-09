@@ -11,7 +11,6 @@ from app.auth.deps import get_current_user
 from app.database import execute, query
 from app.data.delta_client import _DELTA_BASE, _delta_auth_get, _delta_auth_post, _delta_order
 from app.services.telegram_notifier import send_telegram, send_telegram_retry
-from app.services.algo_service import pause_all
 from app.services.alert_service import parse_order_rejection, report_broker_success, report_broker_failure
 from app.schemas.trading import (
     BalanceRequest,
@@ -751,8 +750,6 @@ async def emergency_kill(req: CancelOrdersRequest):
     errors = []
     closed = 0
     cancelled = 0
-
-    await pause_all()
 
     r = await _delta_auth_get(api_key, api_secret, "/positions")
     if r["status"] == 200:
