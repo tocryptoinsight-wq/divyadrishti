@@ -562,10 +562,8 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     <tbody id="mtfBody"><tr><td colspan="4" style="color:#666;">Loading...</td></tr></tbody>
   </table>
 
-  <div style="display:flex;justify-content:flex-end;align-items:center;margin:16px 0 8px;border-bottom:1px solid #2a2a4a;padding-bottom:4px;">
-    <button id="acctMgrBtn" onclick="toggleAcctMgr()" style="background:none;border:none;color:#6b7280;font-size:10px;cursor:pointer;text-decoration:underline;padding:0;">+ Accts</button>
-  </div>
-    <div id="acctMgr" style="display:none;margin-top:6px;padding:6px;background:#111827;border:1px solid #2a2a4a;border-radius:6px;">
+
+  <div id="acctMgr" style="display:none;margin-top:6px;padding:6px;background:#111827;border:1px solid #2a2a4a;border-radius:6px;">
     <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;">
       <input class="sym-mgr-input" id="acctApiKey" placeholder="API KEY" style="width:100%;" type="password">
       <input class="sym-mgr-input" id="acctSecret" placeholder="SECRET KEY" style="width:100%;" type="password">
@@ -584,6 +582,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     <span style="font-size:10px;color:#6b7280;white-space:nowrap;">Active</span>
     <button id="acctTabAdmin" onclick="setActiveAcctType('admin')" style="flex:1;padding:3px 6px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600;">Admin</button>
     <button id="acctTabRead" onclick="setActiveAcctType('read')" style="flex:1;padding:3px 6px;background:#1f2937;color:#9ca3af;border:1px solid #374151;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600;">Read Only</button>
+    <button id="acctMgrBtn" onclick="toggleAcctMgr()" style="background:none;border:none;color:#6b7280;font-size:10px;cursor:pointer;text-decoration:underline;padding:0;white-space:nowrap;">+ Accts</button>
   </div>
   <span id="activeModeLabel" style="display:block;font-size:10px;font-weight:600;margin-bottom:4px;"></span>
 
