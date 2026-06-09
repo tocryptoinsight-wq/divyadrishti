@@ -1,8 +1,3 @@
-from app.schemas.algo import (
-    AlgoPauseRequest,
-    AlgoPricesRequest,
-    AlgoStartRequest,
-)
 from app.schemas.trading import (
     AuthRequest,
     BalanceRequest,
@@ -37,7 +32,4 @@ __all__ = [
     "CancelOrdersResponse",
     "ExecuteTradeRequest",
     "ExecuteTradeResponse",
-    "AlgoStartRequest",
-    "AlgoPauseRequest",
-    "AlgoPricesRequest",
 ]
