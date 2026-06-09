@@ -74,6 +74,12 @@ def _check_exit(is_long: bool, close, ema10, ema20) -> bool:
     return c > e20
 
 
+def _round_to_tick(price: float, tick_size: float) -> float:
+    if not tick_size or tick_size <= 0:
+        return price
+    return round(price / tick_size) * tick_size
+
+
 async def _place_trade(symbol: str, side: str, qty: float, sl: float, tp: float = None, api_key: str = "", api_secret: str = "") -> dict:
     info = await _fetch_product(symbol)
     if not info:
@@ -88,13 +94,17 @@ async def _place_trade(symbol: str, side: str, qty: float, sl: float, tp: float 
         "order_type": "market_order", "time_in_force": "gtc",
     }
 
+    tick = info.get("tick_size", 0.01)
+    sl_rounded = _round_to_tick(sl, tick)
+    tp_rounded = None if tp is None else _round_to_tick(tp, tick)
+
     bracket_payload = {
         "product_id": pid,
-        "stop_loss_order": {"order_type": "market_order", "stop_price": sl},
+        "stop_loss_order": {"order_type": "market_order", "stop_price": sl_rounded},
         "bracket_stop_trigger_method": "last_traded_price",
     }
-    if tp is not None:
-        bracket_payload["take_profit_order"] = {"order_type": "limit_order", "stop_price": tp, "limit_price": tp}
+    if tp_rounded is not None:
+        bracket_payload["take_profit_order"] = {"order_type": "limit_order", "stop_price": tp_rounded, "limit_price": tp_rounded}
 
     r = await _delta_order(api_key, api_secret, entry_payload)
     body_ok = isinstance(r.get("body"), dict)
@@ -178,7 +188,7 @@ async def _fetch_product(symbol: str) -> Optional[dict]:
                 if isinstance(p, dict) and p.get("symbol"):
                     cv = float(p.get("contract_value", "1")) if p.get("contract_value") else 1.0
                     key = p["symbol"].upper()
-                    new_cache[key] = {"id": p["id"], "contract_value": cv, "contract_type": p.get("contract_type", "")}
+                    new_cache[key] = {"id": p["id"], "contract_value": cv, "contract_type": p.get("contract_type", ""), "tick_size": float(p.get("tick_size", 0.01)) if p.get("tick_size") else 0.01}
             _PROD_CACHE.clear()
             _PROD_CACHE.update(new_cache)
             _PROD_CACHE_TS = now
@@ -584,6 +594,9 @@ async def pause_algo(username: str, symbol: str) -> bool:
         qty = state.get("entry_qty", 0)
         if entry_px and sl_px and pid and qty:
             tp_2r = entry_px + 2 * abs(entry_px - sl_px) if side == "buy" else entry_px - 2 * abs(entry_px - sl_px)
+            info = await _fetch_product(symbol)
+            tick = info.get("tick_size", 0.01) if info else 0.01
+            tp_2r = _round_to_tick(tp_2r, tick)
             await _cancel_orders(creds["api_key"], creds["api_secret"], pid)
             bracket_payload = {
                 "product_id": pid,

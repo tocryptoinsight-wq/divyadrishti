@@ -3142,12 +3142,14 @@ function renderChart(data) {
 
   const candleData = [];
   for (let i = 0; i < times.length; i++) {
+    if (h[i] <= 0 || l[i] <= 0) continue;
     candleData.push({ time: Math.floor(times[i]), open: o[i], high: h[i], low: l[i], close: c[i] });
   }
+  if (candleData.length === 0) return;
   candleSeries.setData(candleData);
   dataLoaded = true;
-  var lcIdx = times.length - 1;
-  realtimeCandle = { time: Math.floor(times[lcIdx]), open: o[lcIdx], high: h[lcIdx], low: l[lcIdx], close: c[lcIdx] };
+  var lcIdx = candleData.length - 1;
+  realtimeCandle = { time: candleData[lcIdx].time, open: candleData[lcIdx].open, high: candleData[lcIdx].high, low: candleData[lcIdx].low, close: candleData[lcIdx].close };
 
   _refreshIndicatorLines();
 }
@@ -5044,15 +5046,17 @@ async function fetchChartData() {
       document.querySelectorAll('.processingDot').forEach(function(e){e.classList.add('proc-hide');});
     }
     _lastPrices[currentSymbol] = data.last_price || 0;
+    const lp = data.last_price;
+    const lc = data.last_close;
+    if (lp <= 0) return;
     const resSec = ({ '5': 300, '15': 900, '60': 3600 })[document.getElementById('resolutionSelect').value] || 300;
     const now = Math.floor(Date.now() / 1000);
     const currentPeriod = Math.floor(now / resSec) * resSec;
-    const lp = data.last_price;
-    const lc = data.last_close;
     if (currentPeriod !== realtimeCandle.time) {
-      var initHigh = Math.max(lp, lc || lp);
-      var initLow = Math.min(lp, lc || lp);
-      realtimeCandle = { time: currentPeriod, open: lc || lp, high: initHigh, low: initLow, close: lp };
+      var initLc = (lc > 0) ? lc : realtimeCandle.close;
+      var initHigh = Math.max(lp, initLc);
+      var initLow = Math.min(lp, initLc);
+      realtimeCandle = { time: currentPeriod, open: initLc, high: initHigh, low: initLow, close: lp };
       if (lastChartData) {
         _lastIndicatorRefresh = Date.now();
         _refreshIndicatorLines();

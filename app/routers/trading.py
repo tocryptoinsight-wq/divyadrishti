@@ -53,7 +53,8 @@ async def _load_products():
                     if sym and pid:
                         cv_float = float(cv) if cv else 1.0
                         ct = p.get("contract_type", "")
-                        entry = {"id": pid, "contract_value": cv_float, "contract_type": ct}
+                        ts = float(p.get("tick_size", 0.01)) if p.get("tick_size") else 0.01
+                        entry = {"id": pid, "contract_value": cv_float, "contract_type": ct, "tick_size": ts}
                         key = sym.upper()
                         if key not in cache:
                             cache[key] = entry
@@ -79,6 +80,12 @@ async def _product_info(symbol: str) -> dict | None:
     if now > _PRODUCT_CACHE_TTL:
         await _load_products()
     return _PRODUCT_CACHE.get(symbol.upper())
+
+
+def _round_to_tick(price: float, tick_size: float) -> float:
+    if not tick_size or tick_size <= 0:
+        return price
+    return round(price / tick_size) * tick_size
 
 
 @router.get("/api/trade/check-product")
@@ -590,20 +597,23 @@ async def execute_trade(req: ExecuteTradeRequest):
         if dry_run:
             payloads = [{"label": "Entry", "payload": entry_payload}]
             if sl_in is not None or tp_in is not None:
+                tick = info.get("tick_size", 0.01)
+                sl_rounded = None if sl_in is None else _round_to_tick(sl_in, tick)
+                tp_rounded = None if tp_in is None else _round_to_tick(tp_in, tick)
                 bracket_payload = {
                     "product_id": pid,
                     "bracket_stop_trigger_method": "last_traded_price",
                 }
-                if sl_in is not None:
+                if sl_rounded is not None:
                     bracket_payload["stop_loss_order"] = {
                         "order_type": "market_order",
-                        "stop_price": sl_in,
+                        "stop_price": sl_rounded,
                     }
-                if tp_in is not None:
+                if tp_rounded is not None:
                     bracket_payload["take_profit_order"] = {
                         "order_type": "limit_order",
-                        "stop_price": tp_in,
-                        "limit_price": tp_in,
+                        "stop_price": tp_rounded,
+                        "limit_price": tp_rounded,
                     }
                 payloads.append({"label": "Bracket SL/TP", "payload": bracket_payload})
             return {
@@ -648,20 +658,23 @@ async def execute_trade(req: ExecuteTradeRequest):
         # Step 2: Place bracket order with SL/TP
         bracket_ok = True
         if sl_in is not None or tp_in is not None:
+            tick = info.get("tick_size", 0.01)
+            sl_rounded = None if sl_in is None else _round_to_tick(sl_in, tick)
+            tp_rounded = None if tp_in is None else _round_to_tick(tp_in, tick)
             bracket_payload = {
                 "product_id": pid,
                 "bracket_stop_trigger_method": "last_traded_price",
             }
-            if sl_in is not None:
+            if sl_rounded is not None:
                 bracket_payload["stop_loss_order"] = {
                     "order_type": "market_order",
-                    "stop_price": sl_in,
+                    "stop_price": sl_rounded,
                 }
-            if tp_in is not None:
+            if tp_rounded is not None:
                 bracket_payload["take_profit_order"] = {
                     "order_type": "limit_order",
-                    "stop_price": tp_in,
-                    "limit_price": tp_in,
+                    "stop_price": tp_rounded,
+                    "limit_price": tp_rounded,
                 }
             logger.info(f"Bracket payload for {symbol}: {bracket_payload}")
             r_bracket = await _delta_auth_post(api_key, api_secret, "/orders/bracket", bracket_payload)

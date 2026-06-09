@@ -15,6 +15,35 @@ _MANUAL_TRAIL_TASKS: Dict[tuple, asyncio.Task] = {}
 _MANUAL_TRAIL_CREDS: Dict[tuple, dict] = {}
 
 _SHARED_CLIENT = None
+_PROD_CACHE: Dict[str, dict] = {}
+_PROD_CACHE_TS: float = 0
+
+
+def _round_to_tick(price: float, tick_size: float) -> float:
+    if not tick_size or tick_size <= 0:
+        return price
+    return round(price / tick_size) * tick_size
+
+
+async def _fetch_product(symbol: str) -> Optional[dict]:
+    global _PROD_CACHE_TS
+    now = time.time()
+    if now - _PROD_CACHE_TS > 300:
+        try:
+            from app.data.delta_client import delta_client
+            raw = await delta_client.get_products()
+            new_cache = {}
+            for p in raw.get("result", []):
+                if isinstance(p, dict) and p.get("symbol"):
+                    cv = float(p.get("contract_value", "1")) if p.get("contract_value") else 1.0
+                    key = p["symbol"].upper()
+                    new_cache[key] = {"id": p["id"], "contract_value": cv, "contract_type": p.get("contract_type", ""), "tick_size": float(p.get("tick_size", 0.01)) if p.get("tick_size") else 0.01}
+            _PROD_CACHE.clear()
+            _PROD_CACHE.update(new_cache)
+            _PROD_CACHE_TS = now
+        except Exception as e:
+            logger.warning("Failed to cache product: %s", e)
+    return _PROD_CACHE.get(symbol.upper())
 
 
 async def _fetch_ticker(symbol: str) -> Optional[dict]:
@@ -239,6 +268,9 @@ async def stop_manual_trail(username: str, symbol: str) -> bool:
         pid = state.get("product_id", 0)
         if entry_px and sl_px and pid:
             tp_2r = entry_px + 2 * abs(entry_px - sl_px) if side == "buy" else entry_px - 2 * abs(entry_px - sl_px)
+            info = await _fetch_product(symbol)
+            tick = info.get("tick_size", 0.01) if info else 0.01
+            tp_2r = _round_to_tick(tp_2r, tick)
             await _cancel_manual_orders(creds["api_key"], creds["api_secret"], pid)
             bracket_payload = {
                 "product_id": pid,
