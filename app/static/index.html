@@ -55,6 +55,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .app-layout.hide-right .sidebar-right { display:none; }
 .app-layout.hide-right .sidebar { flex:1; width:auto; max-width:480px; }
 .app-layout.hide-main.hide-right .sidebar { flex:1; width:auto; max-width:100%; }
+.app-layout.hide-left .sidebar { display:none; }
 /* overlay */
 .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:900; }
 .sidebar-overlay.active { display:block; }
@@ -642,6 +643,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
       <span style="font-size:10px;color:#666;" id="lastUpdate"></span>
       <span id="candleTimer" style="font-size:11px;color:#4ade80;font-family:'Consolas',monospace;">--:--</span>
        <button id="refreshBtn" style="background:none;border:none;color:#6b7280;font-size:13px;cursor:pointer;padding:0;line-height:1;display:inline-block;">&#x27F3;</button>
+      <span class="tgl-btn" id="chartViewBtn" onclick="toggleChartView()" title="Expand chart" style="font-size:10px;padding:2px 5px;">&#x25F0;</span>
       <span id="connStatus" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;" title="Checking connection..."></span>
     </div>
   </div>
@@ -5210,6 +5212,12 @@ function closeAll() {
   if (closeBtn) closeBtn.style.display = 'none';
   updateToggleButtons();
 }
+function toggleChartView() {
+  const layout = document.querySelector('.app-layout');
+  layout.classList.toggle('hide-left');
+  const btn = document.getElementById('chartViewBtn');
+  if (btn) btn.classList.toggle('active');
+}
 function applyResponsive() {
   const layout = document.querySelector('.app-layout');
   const w = window.innerWidth;
@@ -5219,6 +5227,7 @@ function applyResponsive() {
   } else {
     layout.classList.remove('hide-main', 'hide-right', 'show-main', 'show-right');
   }
+  if (w <= 1024) layout.classList.remove('hide-left');
   updateToggleButtons();
 }
 function togglePanel(panel) {
@@ -5245,10 +5254,12 @@ function updateToggleButtons() {
   const w = window.innerWidth;
   const mMob = document.getElementById('mobTglMain');
   const rMob = document.getElementById('mobTglRight');
+  const cvBtn = document.getElementById('chartViewBtn');
   const mActive = w > 1024 ? !layout.classList.contains('hide-main') : !!document.querySelector('.sidebar')?.classList.contains('open');
   const rActive = w > 1024 ? !layout.classList.contains('hide-right') : !!document.getElementById('sidebarRight')?.classList.contains('open');
   mMob?.classList.toggle('active', mActive);
   rMob?.classList.toggle('active', rActive);
+  cvBtn?.classList.toggle('active', w > 1024 && layout.classList.contains('hide-left'));
 }
 applyResponsive();
 window.addEventListener('resize', applyResponsive);
