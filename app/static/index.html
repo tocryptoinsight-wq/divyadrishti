@@ -1051,7 +1051,7 @@ function initChart() {
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
       crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { color: '#6366f1', width: 1, style: 3 }, horzLine: { color: '#6366f1', width: 1, style: 3 } },
       rightPriceScale: { borderColor: '#374151' },
-      timeScale: { borderColor: '#374151', timeVisible: true, secondsVisible: false, barSpacing: 5, visible: true, rightOffset: 10,
+      timeScale: { borderColor: '#374151', timeVisible: true, secondsVisible: false, barSpacing: 8, visible: true, rightOffset: 10,
         tickMarkFormatter: function(time, tickMarkType) {
           var d = new Date(time * 1000);
           var opts = { timeZone: 'Asia/Kolkata', hour12: false };
@@ -3192,9 +3192,9 @@ function renderChart(data) {
   var lcIdx = candleData.length - 1;
   realtimeCandle = { time: candleData[lcIdx].time, open: candleData[lcIdx].open, high: candleData[lcIdx].high, low: candleData[lcIdx].low, close: candleData[lcIdx].close };
   if (pendingScroll) {
-    try { chart.timeScale().applyOptions({ barSpacing: 5 }); } catch(e) {}
+    try { chart.timeScale().applyOptions({ barSpacing: 8 }); } catch(e) {}
     try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
-    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - 60), to: candleData.length + 2 }); } catch(e) {}
+    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - 30), to: candleData.length + 2 }); } catch(e) {}
   }
 
   _refreshIndicatorLines();
@@ -3203,8 +3203,8 @@ function renderChart(data) {
 function scrollToLatest(data) {
   if (!data.candles || !data.candles.time.length) return;
   const times = data.candles.time;
-  const logicalFrom = Math.max(0, times.length - 60);
-  try { chart.timeScale().applyOptions({ barSpacing: 5 }); } catch(e) {}
+  const logicalFrom = Math.max(0, times.length - 30);
+  try { chart.timeScale().applyOptions({ barSpacing: 8 }); } catch(e) {}
   try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
   try { chart.timeScale().setVisibleLogicalRange({ from: logicalFrom, to: times.length + 2 }); } catch(e) {}
 }
