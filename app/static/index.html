@@ -5560,6 +5560,20 @@ _syncNotifUI();
 /* _notifiedStates baseline set at init; same state re-notification skipped */
 _highlightActiveTypeBtn();
 updateBalanceDisplay();
+setTimeout(function() {
+  var raw = localStorage.getItem('tradeSetup');
+  if (raw) return;
+  var bals = JSON.parse(localStorage.getItem('cachedBalances') || '{}');
+  var total = 0;
+  for (var v of Object.values(bals)) { total += parseFloat(v) || 0; }
+  if (total > 0) {
+    var cap = Math.floor(total);
+    var capEl = document.getElementById('tradeCapital');
+    var riskEl = document.getElementById('riskAmount');
+    if (capEl) capEl.value = cap;
+    if (riskEl) riskEl.value = (cap * 0.03).toFixed(2);
+  }
+}, 3000);
 document.addEventListener('keydown', function(e) {
   if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
   if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
