@@ -3194,7 +3194,7 @@ function renderChart(data) {
   if (pendingScroll) {
     try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
     try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
-    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - 80), to: candleData.length + 2 }); } catch(e) {}
+    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - 120), to: candleData.length + 2 }); } catch(e) {}
   }
 
   _refreshIndicatorLines();
@@ -3203,7 +3203,7 @@ function renderChart(data) {
 function scrollToLatest(data) {
   if (!data.candles || !data.candles.time.length) return;
   const times = data.candles.time;
-  const logicalFrom = Math.max(0, times.length - 80);
+  const logicalFrom = Math.max(0, times.length - 120);
   try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
   try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
   try { chart.timeScale().setVisibleLogicalRange({ from: logicalFrom, to: times.length + 2 }); } catch(e) {}
