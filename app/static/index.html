@@ -5217,6 +5217,12 @@ function toggleChartView() {
   layout.classList.toggle('hide-left');
   const btn = document.getElementById('chartViewBtn');
   if (btn) btn.classList.toggle('active');
+  setTimeout(function() {
+    if (!chart) return;
+    var container = document.getElementById('chart');
+    if (container) chart.resize(container.clientWidth, container.clientHeight);
+    if (lastChartData) scrollToLatest(lastChartData);
+  }, 300);
 }
 function applyResponsive() {
   const layout = document.querySelector('.app-layout');
