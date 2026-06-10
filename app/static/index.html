@@ -5096,6 +5096,8 @@ async function fetchChartData() {
     const lp = data.last_price;
     const lc = data.last_close;
     if (lp <= 0) return;
+    var refPrice = (lc > 0) ? lc : (realtimeCandle.close > 0 ? realtimeCandle.close : lp);
+    if (lp > refPrice * 10 || lp < refPrice * 0.1) return;
     const resSec = ({ '5': 300, '15': 900, '60': 3600 })[document.getElementById('resolutionSelect').value] || 300;
     const now = Math.floor(Date.now() / 1000);
     const currentPeriod = Math.floor(now / resSec) * resSec;
