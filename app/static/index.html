@@ -5222,7 +5222,7 @@ function toggleChartView() {
     if (!chart) return;
     var container = document.getElementById('chart');
     if (container) chart.resize(container.clientWidth, container.clientHeight);
-    if (lastChartData) scrollToLatest(lastChartData, 200);
+    if (lastChartData) scrollToLatest(lastChartData, layout.classList.contains('hide-left') ? 200 : 120);
   }, 300);
 }
 function applyResponsive() {
