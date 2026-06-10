@@ -3170,7 +3170,8 @@ function renderAnalysis(data) {
   _rsiArray = data.indicator_values ? data.indicator_values.rsi : null;
   _mtfValues = data.mtf_values || null;
   if (initialLoad || pendingScroll) {
-    scrollToLatest(data);
+    var _expanded = document.querySelector('.app-layout')?.classList.contains('hide-left');
+    scrollToLatest(data, _expanded ? 200 : 120);
   }
   initialLoad = false;
   pendingScroll = false;
@@ -3196,7 +3197,8 @@ function renderChart(data) {
   if (pendingScroll) {
     try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
     try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
-    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - 120), to: candleData.length + 2 }); } catch(e) {}
+    var _expanded = document.querySelector('.app-layout')?.classList.contains('hide-left');
+    try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - (_expanded ? 200 : 120)), to: candleData.length + 2 }); } catch(e) {}
   }
 
   _refreshIndicatorLines();
