@@ -3210,13 +3210,7 @@ function scrollToLatest(data) {
 }
 
 function resetChartView() {
-  try {
-    chart.timeScale().resetTimeScale();
-  } catch(e) {}
   if (lastChartData) scrollToLatest(lastChartData);
-  try {
-    chart.priceScale('right').applyOptions({ autoScale: true, scaleMargins: { top: 0, bottom: 0 } });
-  } catch(e) {}
 }
 
 function renderTradeSetup(data) {
