@@ -3202,10 +3202,11 @@ function renderChart(data) {
   _refreshIndicatorLines();
 }
 
-function scrollToLatest(data) {
+function scrollToLatest(data, count) {
   if (!data.candles || !data.candles.time.length) return;
   const times = data.candles.time;
-  const logicalFrom = Math.max(0, times.length - 120);
+  const n = count || 120;
+  const logicalFrom = Math.max(0, times.length - n);
   try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
   try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
   try { chart.timeScale().setVisibleLogicalRange({ from: logicalFrom, to: times.length + 2 }); } catch(e) {}
@@ -5221,7 +5222,7 @@ function toggleChartView() {
     if (!chart) return;
     var container = document.getElementById('chart');
     if (container) chart.resize(container.clientWidth, container.clientHeight);
-    if (lastChartData) scrollToLatest(lastChartData);
+    if (lastChartData) scrollToLatest(lastChartData, 200);
   }, 300);
 }
 function applyResponsive() {
