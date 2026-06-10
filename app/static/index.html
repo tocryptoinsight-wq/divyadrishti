@@ -40,8 +40,8 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .sidebar { width: 320px; background: var(--bg-secondary); padding: 8px; border-right: 1px solid var(--border); overflow: auto hidden; flex-shrink: 0; height: 100%; }
 .sidebar-right { width: 350px; background: var(--bg-secondary); padding: 8px; border-left: 1px solid var(--border); overflow: auto hidden; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; }
 .main { flex: 1; display: flex; flex-direction: column; padding: 12px; height: 100vh; min-width: 0; overflow: hidden; }
-.chart-container { flex: 7; position: relative; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 4px 0; background: var(--bg-tertiary); min-height: 0; }
-.live-trading { flex: 3; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; margin: 4px 0; padding: 6px; overflow: hidden; min-height: 0; display:flex;flex-direction:column; }
+.chart-container { flex: 5; position: relative; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 4px 0; background: var(--bg-tertiary); min-height: 0; }
+.live-trading { flex: 4; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; margin: 4px 0; padding: 6px; overflow: hidden; min-height: 0; display:flex;flex-direction:column; }
 .lt-tab { font-size:10px;padding:3px 10px;border-radius:4px;cursor:pointer;color:var(--text-muted);background:transparent;border:1px solid var(--border);font-weight:600;user-select:none; }
 .lt-tab.active { background:var(--bg-tertiary);color:var(--text-primary);border-color:var(--accent); }
 #ltTabLive::after { content:' |';color:var(--border);font-size:11px;pointer-events:none; }
@@ -327,7 +327,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
   .ts-row { font-size: 10px; padding: 3px 0; }
   .ts-input { width: 56px; font-size: 10px; }
   .main { padding: 6px; }
-  .chart-container { flex: 6.5; }
+  .chart-container { flex: 5; }
   .live-trading { flex: 3.5; }
   .legend { font-size: 9px; gap: 6px; }
   .legend select { font-size: 9px; padding: 1px 3px; }
@@ -342,7 +342,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
   .screener-table th, .screener-table td { padding: 4px 2px; }
   .filter-btn { font-size: 9px; padding: 3px 4px; }
   .main { padding: 4px; }
-  .chart-container { flex: 6; margin: 2px 0; }
+  .chart-container { flex: 4; margin: 2px 0; }
   .live-trading { flex: 4; }
   .ts-row { font-size: 9px; }
   .ts-input { width: 48px; font-size: 9px; }
