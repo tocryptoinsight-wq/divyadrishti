@@ -1292,6 +1292,46 @@ function _redrawCanvas() {
     }
   } catch(e) {}
 
+  // Session markers (AS/ES/US open times in IST)
+  try {
+    var vRange = chart.timeScale().getVisibleRange();
+    if (vRange && vRange.from && vRange.to) {
+      var vFromD = new Date(vRange.from * 1000);
+      var vToD = new Date(vRange.to * 1000);
+      var ch = cv.height / dpr;
+      var sessions = [
+        { name: 'AS (05:30-14:30)', offset: 0 },
+        { name: 'ES (13:30-22:30)', offset: 8 * 3600 },
+        { name: 'US (19:30-02:30)', offset: 14 * 3600 },
+      ];
+      var d = new Date(Date.UTC(vFromD.getUTCFullYear(), vFromD.getUTCMonth(), vFromD.getUTCDate()));
+      var endTs = vToD.getTime();
+      while (d.getTime() <= endTs) {
+        var dayStart = d.getTime() / 1000;
+        for (var si = 0; si < sessions.length; si++) {
+          var t = dayStart + sessions[si].offset;
+          var x = chart.timeScale().timeToCoordinate(t);
+          if (x == null) continue;
+          x = Math.round(x);
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, ch);
+          ctx.strokeStyle = 'rgba(148,163,184,0.2)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = 'rgba(148,163,184,0.5)';
+          ctx.font = '8px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(sessions[si].name, x, ch - 2);
+        }
+        d.setUTCDate(d.getUTCDate() + 1);
+      }
+    }
+  } catch(e) {}
+
   // Trend lines
     _trendLines.forEach(function(t) {
     var x1 = chart.timeScale().logicalToCoordinate(t.x1);
