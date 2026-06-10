@@ -3213,7 +3213,9 @@ function scrollToLatest(data, count) {
 }
 
 function resetChartView() {
-  if (lastChartData) scrollToLatest(lastChartData);
+  if (!lastChartData) return;
+  var expanded = document.querySelector('.app-layout')?.classList.contains('hide-left');
+  scrollToLatest(lastChartData, expanded ? 200 : 120);
 }
 
 function renderTradeSetup(data) {
