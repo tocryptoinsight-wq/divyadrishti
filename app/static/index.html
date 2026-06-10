@@ -4545,6 +4545,7 @@ async function loadBalances() {
   } catch (e) { console.warn('loadBalances error:', e); }
   localStorage.setItem('cachedBalances', JSON.stringify(merged));
   updateBalanceDisplay();
+  applyBalanceDefaults();
 }
 function showConfirmModal(details) {
   return new Promise(resolve => {
@@ -4597,8 +4598,7 @@ function applyBalanceDefaults() {
   var capEl = document.getElementById('tradeCapital');
   var riskEl = document.getElementById('riskAmount');
   if (!capEl || !riskEl) return;
-  var bals = JSON.parse(localStorage.getItem('cachedBalances') || '{}');
-  var avail = parseFloat(bals['USDT'] || bals['USD'] || 0);
+  var avail = getAvailableBalance();
   if (avail > 0) {
     var cap = Math.floor(avail);
     capEl.value = cap;
