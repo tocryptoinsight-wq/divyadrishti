@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#0b1121",
   "theme_color": "#131c31",
-  "orientation": "portrait",
+  "orientation": "any",
   "categories": ["finance", "trading", "cryptocurrency"],
   "icons": [
     {
