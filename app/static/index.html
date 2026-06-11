@@ -689,6 +689,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
           <tr><td style="padding:2px 3px;text-align:left;color:#94a3b8;">H</td><td id="ciHigh" style="padding:2px 3px;text-align:center;color:#22c55e;"></td><td style="padding:2px 3px;text-align:left;color:#94a3b8;">L</td><td id="ciLow" style="padding:2px 3px;text-align:center;color:#ef4444;"></td></tr>
         </tbody>
       </table>
+      <div style="display:flex;gap:12px;font-size:9px;margin-top:3px;padding-top:3px;border-top:1px solid rgba(99,102,241,0.15);">
+        <span style="color:#94a3b8;">ATR:</span><span id="ciAtr" style="color:#22c55e;"></span>
+        <span style="color:#94a3b8;">BP:</span><span id="ciBp" style="color:#22c55e;"></span>
+      </div>
       <div style="margin-top:4px;border-top:1px solid rgba(99,102,241,0.2);padding-top:3px;"></div>
       <table id="ciMtfTable" style="width:100%;border-collapse:collapse;font-size:9px;">
         <thead><tr>
@@ -1873,6 +1877,10 @@ function _handleChartClick(param) {
         document.getElementById('ciHigh').textContent = lcd.candles.high[idx] != null ? Number(lcd.candles.high[idx]).toFixed(2) : '-';
         document.getElementById('ciLow').textContent = lcd.candles.low[idx] != null ? Number(lcd.candles.low[idx]).toFixed(2) : '-';
         document.getElementById('ciClose').textContent = lcd.candles.close[idx] != null ? Number(lcd.candles.close[idx]).toFixed(2) : '-';
+        var _co = lcd.candles.close[idx], _oo = lcd.candles.open[idx], _ho = lcd.candles.high[idx], _lo = lcd.candles.low[idx];
+        var _bp = (_ho - _lo) > 0 ? Math.abs(_co - _oo) / (_ho - _lo) * 100 : 0;
+        document.getElementById('ciAtr').textContent = _atrArray && _atrArray[idx] != null ? Number(_atrArray[idx]).toFixed(2) : '-';
+        document.getElementById('ciBp').textContent = _bp.toFixed(0) + '%';
         ciPopulateMtf(idx);
         showCandleInfoPanel(param.point.x, param.point.y);
       }
@@ -2442,6 +2450,7 @@ async function changeSymbol(symbol) {
   realtimeCandle = { time: 0, open: 0, high: 0, low: 0, close: 0 };
   _adxArray = null;
   _rsiArray = null;
+  _atrArray = null;
   _clearDrawings();
   _computedTrade = {};
   pendingScroll = true;
@@ -2474,6 +2483,7 @@ let _pendingIndicatorState = null;
 let _candleInfoMode = false;
 let _adxArray = null;
 let _rsiArray = null;
+let _atrArray = null;
 let _mtfValues = null;
 
 async function _loadIndicatorList() {
@@ -3242,6 +3252,7 @@ function renderAnalysis(data) {
   lastChartData = data;
   _adxArray = data.indicator_values ? data.indicator_values.adx : null;
   _rsiArray = data.indicator_values ? data.indicator_values.rsi : null;
+  _atrArray = data.ema ? data.ema.atr : null;
   _mtfValues = data.mtf_values || null;
   if (initialLoad || pendingScroll) {
     var _expanded = document.querySelector('.app-layout')?.classList.contains('hide-left');
