@@ -301,18 +301,28 @@ async def get_analysis(
     symbol: str,
     resolution: str = Query("5", description="Main chart resolution: 5, 15, or 60"),
     chart_limit: int = Query(2000, ge=10, le=2000, description="Candles to return"),
+    since: int = Query(None, description="Only return candles after this unix timestamp"),
 ):
     main_res, main_sec = RESOLUTION_MAP.get(resolution, ("5m", 300))
 
-    data_main = await delta_client.get_candles(symbol, main_res, limit=500)
-    if len(data_main["close"]) < 100:
-        return {"error": "Not enough data"}
-
-    data_5m = data_main if main_res == "5m" else await delta_client.get_candles(symbol, "5m", limit=500)
-    data_15m, data_1h = await asyncio.gather(
-        delta_client.get_candles(symbol, "15m", limit=500),
-        delta_client.get_candles(symbol, "1h", limit=500),
-    )
+    if since is not None:
+        data_main = await delta_client.get_candles(symbol, main_res, start=since - 150 * main_sec)
+        if len(data_main["close"]) < 100:
+            return {"error": "Not enough data"}
+        data_5m = data_main if main_res == "5m" else await delta_client.get_candles(symbol, "5m", start=since - 150 * 300)
+        data_15m, data_1h = await asyncio.gather(
+            delta_client.get_candles(symbol, "15m", start=since - 150 * 900),
+            delta_client.get_candles(symbol, "1h", start=since - 100 * 3600),
+        )
+    else:
+        data_main = await delta_client.get_candles(symbol, main_res, limit=500)
+        if len(data_main["close"]) < 100:
+            return {"error": "Not enough data"}
+        data_5m = data_main if main_res == "5m" else await delta_client.get_candles(symbol, "5m", limit=500)
+        data_15m, data_1h = await asyncio.gather(
+            delta_client.get_candles(symbol, "15m", limit=500),
+            delta_client.get_candles(symbol, "1h", limit=500),
+        )
 
     analysis_main = compute_analysis(
         data_main["close"], data_main["high"], data_main["low"],
@@ -330,6 +340,19 @@ async def get_analysis(
         data_1h["close"], data_1h["high"], data_1h["low"],
         data_1h["volume"], settings,
     )
+
+    # If since is set, slice arrays to only return candles with time > since
+    _since_slice = 0
+    if since is not None:
+        _times = data_main["time"]
+        _mask = _times > since
+        if not np.any(_mask):
+            return {"symbol": symbol, "no_update": True, "server_time": int(time.time())}
+        _since_slice = int(np.argmax(_mask))
+        for _key in ("time", "open", "high", "low", "close", "volume"):
+            data_main[_key] = data_main[_key][_since_slice:]
+        for _key in ("ema10", "ema20", "ema50", "atr", "adx", "rsi", "trend"):
+            analysis_main[_key] = analysis_main[_key][_since_slice:]
 
     # Direction from EMA10 > EMA20 for signal
     _e10_1h = analysis_1h["ema10"]

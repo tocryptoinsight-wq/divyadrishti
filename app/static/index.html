@@ -2406,6 +2406,7 @@ function _findScreenerIdx(sym) {
 var _changeSymbolReq = 0;
 async function changeSymbol(symbol) {
   _saveDrawings();
+  _saveIndicatorState();
   var reqId = ++_changeSymbolReq;
   if (symbol) {
     _screenerActiveIdx = _findScreenerIdx(symbol);
@@ -3085,16 +3086,74 @@ async function refreshAll(live) {
 }
 
 let mtfData = null;
+const _analysisCache = new Map();
 
 
 async function fetchAnalysis() {
   const res = document.getElementById('resolutionSelect').value;
+  const symbol = currentSymbol;
   try {
-    const url = API + '/analysis/' + currentSymbol + '?resolution=' + res;
+    const cached = _analysisCache.get(symbol);
+    let url = API + '/analysis/' + symbol + '?resolution=' + res;
+    if (cached) url += '&since=' + cached.lastCandleTime;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     if (data.error) { showError(data.error); return false; }
+    if (data.no_update) {
+      if (cached) {
+        mtfData = cached.data.mtf;
+        renderAnalysis(cached.data);
+        return true;
+      }
+      mtfData = data.mtf;
+      renderAnalysis(data);
+      return true;
+    }
+    if (cached && data.candles && data.candles.time && data.candles.time.length) {
+      var cc = cached.data.candles;
+      var nc = data.candles;
+      var maxLen = Math.min(Math.max(cc.time.length, 500), 500);
+      var lastCt = cc.time[cc.time.length - 1];
+      var newCt = nc.time;
+      var dupIdx = 0;
+      while (dupIdx < newCt.length && newCt[dupIdx] <= lastCt) dupIdx++;
+      if (dupIdx < newCt.length) {
+        data.candles = {
+          time:   cc.time.concat(Array.prototype.slice.call(newCt, dupIdx)).slice(-maxLen),
+          open:   cc.open.concat(Array.prototype.slice.call(nc.open, dupIdx)).slice(-maxLen),
+          high:   cc.high.concat(Array.prototype.slice.call(nc.high, dupIdx)).slice(-maxLen),
+          low:    cc.low.concat(Array.prototype.slice.call(nc.low, dupIdx)).slice(-maxLen),
+          close:  cc.close.concat(Array.prototype.slice.call(nc.close, dupIdx)).slice(-maxLen),
+          volume: cc.volume.concat(Array.prototype.slice.call(nc.volume, dupIdx)).slice(-maxLen),
+        };
+        if (data.ema && cached.data.ema) {
+          for (var ek in data.ema) {
+            if (cached.data.ema[ek]) {
+              data.ema[ek] = cached.data.ema[ek].concat(Array.prototype.slice.call(data.ema[ek], dupIdx)).slice(-maxLen);
+            }
+          }
+        }
+        if (data.indicator_values && cached.data.indicator_values) {
+          for (var ik in data.indicator_values) {
+            if (cached.data.indicator_values[ik]) {
+              data.indicator_values[ik] = cached.data.indicator_values[ik].concat(Array.prototype.slice.call(data.indicator_values[ik], dupIdx)).slice(-maxLen);
+            }
+          }
+        }
+        if (data.mtf_values && cached.data.mtf_values) {
+          for (var mk in data.mtf_values) {
+            for (var sk in data.mtf_values[mk]) {
+              if (cached.data.mtf_values[mk] && cached.data.mtf_values[mk][sk]) {
+                data.mtf_values[mk][sk] = cached.data.mtf_values[mk][sk].concat(Array.prototype.slice.call(data.mtf_values[mk][sk], dupIdx)).slice(-maxLen);
+              }
+            }
+          }
+        }
+      }
+    }
+    _analysisCache.set(symbol, { data: data, lastCandleTime: data.candles.time[data.candles.time.length - 1] });
+    if (symbol !== currentSymbol) return false;
     mtfData = data.mtf;
     renderAnalysis(data);
     return true;
