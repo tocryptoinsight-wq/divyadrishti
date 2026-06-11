@@ -132,7 +132,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .measure-label { background:rgba(15,23,42,0.92); border:1px solid rgba(99,102,241,0.4); border-radius:6px; padding:4px 8px; display:flex; flex-direction:column; gap:1px; pointer-events:none; }
 .measure-label-row { display:flex; justify-content:space-between; gap:12px; font-size:10px; }
 .measure-label-row .ml-key { color:#94a3b8; }
-.measure-label-row .ml-val { color:#e2e8f0; font-weight:600; font-family:'Consolas',monospace; }
+.measure-label-row .ml-val { color:#e2e8f0; font-weight:600; font-family:'Consolas','Segoe UI',Arial,sans-serif; }
 
 #chartResetBtn {
   position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
@@ -222,8 +222,8 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .ts-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 12px; }
 .ts-row + .ts-row { border-top: 1px solid #1f2937; }
 .ts-label { color: #9ca3af; font-size: 11px; }
-.ts-value { color: #f3f4f6; font-weight: 600; font-family: 'JetBrains Mono', 'Consolas', monospace; font-size: 12px; }
-.ts-input { width: 72px; padding: 3px 6px; background: #1a1a2e; color: #f3f4f6; border: 1px solid #374151; border-radius: 4px; font-size: 11px; text-align: right; font-family: 'Consolas', monospace; outline: none; transition: border 0.15s; }
+.ts-value { color: #f3f4f6; font-weight: 600; font-family: 'JetBrains Mono', 'Consolas', 'Segoe UI', Arial, sans-serif; font-size: 12px; }
+.ts-input { width: 72px; padding: 3px 6px; background: #1a1a2e; color: #f3f4f6; border: 1px solid #374151; border-radius: 4px; font-size: 11px; text-align: right; font-family: 'Consolas', 'Segoe UI', Arial, sans-serif; outline: none; transition: border 0.15s; }
 .ts-input:focus { border-color: #6366f1; }
 .ts-input:disabled { opacity: 1; color: #9ca3af; border-color: #2d2d4a; background: #12121e; }
 .ts-tabs { display: flex; gap: 3px; }
@@ -645,7 +645,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <span style="font-size:10px;color:#666;" id="lastUpdate"></span>
-      <span id="candleTimer" style="font-size:11px;color:#4ade80;font-family:'Consolas',monospace;">--:--</span>
+      <span id="candleTimer" style="font-size:11px;color:#4ade80;font-family:'Consolas','Segoe UI',Arial,sans-serif;">--:--</span>
        <button id="refreshBtn" style="background:none;border:none;color:#6b7280;font-size:13px;cursor:pointer;padding:0;line-height:1;display:inline-block;">&#x27F3;</button>
       <span class="tgl-btn" id="chartViewBtn" onclick="toggleChartView()" title="Expand chart" style="font-size:10px;padding:2px 5px;">&#x25F0;</span>
       <span class="tgl-btn" id="candleToggleBtn" onclick="toggleCandles()" title="Toggle candles" style="font-size:10px;padding:2px 5px;">&#x1F4A1;</span>
@@ -1459,7 +1459,7 @@ function _redrawCanvas() {
       ctx.lineWidth = 0.5;
       ctx.stroke();
       ctx.fillStyle = fibTextColor;
-      ctx.font = '10px monospace';
+      ctx.font = '10px "Segoe UI", Arial, sans-serif';
       for (var li = 0; li < fibLevels.length; li++) {
         var pctVal = fibLevels[li];
         var price = _flp(pctVal);
@@ -1472,7 +1472,7 @@ function _redrawCanvas() {
         var _pct = (pctVal * 100).toFixed(1);
         var _prc = price.toFixed(2);
         var _lx = fx2 + 4;
-        ctx.font = '11px monospace';
+        ctx.font = '11px "Segoe UI", Arial, sans-serif';
         ctx.fillStyle = '#ca8a04';
         ctx.fillText(_pct + '%', _lx, py);
         var _pw = ctx.measureText(_pct + '%').width;
@@ -1620,7 +1620,7 @@ function _redrawCanvas() {
     ctx.fillText('📏 Measure', infoX + 8, infoY + 4);
 
     // Draw info lines
-    ctx.font = '11px Consolas, monospace';
+    ctx.font = '11px Consolas, "Segoe UI", Arial, sans-serif';
     infoLines.forEach(function(line, idx) {
       ctx.fillStyle = '#d97706';
       ctx.textAlign = 'left';
@@ -1684,7 +1684,7 @@ function _redrawCanvas() {
       var pPct = Math.min(_measureStart.price, _measureCursor.price) > 0 ? (pPriceDiff / Math.min(_measureStart.price, _measureCursor.price)) * 100 : 0;
       var pBars = Math.abs(_measureCursor.logical - _measureStart.lx);
       ctx.fillStyle = '#d97706';
-      ctx.font = '11px Consolas, monospace';
+      ctx.font = '11px Consolas, "Segoe UI", Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'bottom';
       var previewLabel = 'Δ' + pPriceDiff.toFixed(2) + '  ' + pBars.toFixed(0) + 'bars  ' + pPct.toFixed(2) + '%';
@@ -1754,7 +1754,7 @@ function _redrawCanvas() {
     var reward = Math.abs(p.tp - p.entry);
     var rr = R > 0 ? (reward / R) : 0;
     ctx.fillStyle = '#eab308';
-    ctx.font = '10px monospace';
+    ctx.font = '10px "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('R:R=> ' + rr.toFixed(1) + 'R', px + _pBw / 2, (sy + ey) / 2);
