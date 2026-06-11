@@ -74,6 +74,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .lt-pagination span { min-width:60px;text-align:center; }
 #chart { width: 100%; height: 100%; }
 #chartFallback { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; color: #666; font-size: 14px; }
+#chartLoading { display: none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:12; align-items:center; justify-content:center; background:rgba(15,15,30,0.85); color:#94a3b8; font-size:13px; pointer-events:none; }
+#chartLoading.active { display:flex; }
+#chartLoading .spin { width:20px; height:20px; border:2px solid #3a3a5a; border-top-color:#6366f1; border-radius:50%; animation:spin .8s linear infinite; margin-right:10px; }
+@keyframes spin { to { transform:rotate(360deg); } }
 .chart-tool { background:transparent; border:1px solid transparent; color:#94a3b8; border-radius:5px; padding:3px 7px; font-size:12px; cursor:pointer; font-family:inherit; font-weight:600; user-select:none; transition:all 0.15s; line-height:1.4; }
 .chart-tool:hover { background:rgba(99,102,241,0.1); border-color:rgba(99,102,241,0.3); color:#e2e8f0; }
 .chart-tool.active { background:rgba(99,102,241,0.2); border-color:#6366f1; color:#a5b4fc; }
@@ -650,6 +654,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
   </div>
   <div class="chart-container">
     <div id="chart"></div>
+    <div id="chartLoading" class="active"><div class="spin"></div>Loading chart...</div>
     <div id="chartFallback">Chart library not loaded. Check Internet connection for CDN access.</div>
     <canvas id="chartCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;"></canvas>
     <div id="chartAlert" style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;"></div>
@@ -2423,6 +2428,7 @@ async function changeSymbol(symbol) {
   _updateScreenerRow(symbol);
   document.getElementById('chart').style.display = '';
   document.getElementById('chartFallback').style.display = 'none';
+  document.getElementById('chartLoading').classList.add('active');
   stopChartPolling();
   dataLoaded = false;
   realtimeCandle = { time: 0, open: 0, high: 0, low: 0, close: 0 };
@@ -3192,6 +3198,7 @@ function renderChart(data) {
     candleData.push({ time: Math.floor(times[i]), open: o[i], high: h[i], low: l[i], close: c[i] });
   }
   if (candleData.length === 0) return;
+  document.getElementById('chartLoading').classList.remove('active');
   candleSeries.setData(candleData);
   dataLoaded = true;
   var lcIdx = candleData.length - 1;
