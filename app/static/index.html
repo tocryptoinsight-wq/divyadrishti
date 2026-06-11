@@ -644,6 +644,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
       <span id="candleTimer" style="font-size:11px;color:#4ade80;font-family:'Consolas',monospace;">--:--</span>
        <button id="refreshBtn" style="background:none;border:none;color:#6b7280;font-size:13px;cursor:pointer;padding:0;line-height:1;display:inline-block;">&#x27F3;</button>
       <span class="tgl-btn" id="chartViewBtn" onclick="toggleChartView()" title="Expand chart" style="font-size:10px;padding:2px 5px;">&#x25F0;</span>
+      <span class="tgl-btn" id="candleToggleBtn" onclick="toggleCandles()" title="Toggle candles" style="font-size:10px;padding:2px 5px;">&#x1F4A1;</span>
       <span id="connStatus" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;" title="Checking connection..."></span>
     </div>
   </div>
@@ -1078,6 +1079,7 @@ function initChart() {
     });
 
     chartReady = true;
+    _applyCandleVisibility();
     // Create indicator line series that were deferred during restore
     _createAllIndicatorSeries();
     chart.subscribeClick(_handleChartClick);
@@ -5248,6 +5250,31 @@ function toggleChartView() {
     if (container) chart.resize(container.clientWidth, container.clientHeight);
     if (lastChartData) scrollToLatest(lastChartData, layout.classList.contains('hide-left') ? 200 : 120);
   }, 300);
+}
+function toggleCandles() {
+  _candleHidden = !_candleHidden;
+  localStorage.setItem('candleHidden', _candleHidden);
+  _applyCandleVisibility();
+}
+let _candleHidden = localStorage.getItem('candleHidden') === 'true';
+let _candleOrigColors = null;
+function _applyCandleVisibility() {
+  if (!candleSeries) return;
+  if (!_candleOrigColors) {
+    _candleOrigColors = {
+      upColor: '#00ff88', downColor: '#ff2e2e',
+      borderUpColor: '#00ff88', borderDownColor: '#ff2e2e',
+      wickUpColor: '#00ff88', wickDownColor: '#ff2e2e',
+    };
+  }
+  var opts = _candleHidden ? {
+    upColor: 'transparent', downColor: 'transparent',
+    borderUpColor: 'transparent', borderDownColor: 'transparent',
+    wickUpColor: 'transparent', wickDownColor: 'transparent',
+  } : _candleOrigColors;
+  candleSeries.applyOptions(opts);
+  var btn = document.getElementById('candleToggleBtn');
+  if (btn) btn.classList.toggle('active', _candleHidden);
 }
 function applyResponsive() {
   const layout = document.querySelector('.app-layout');
