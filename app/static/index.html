@@ -691,7 +691,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
       </table>
       <div style="display:flex;gap:12px;font-size:9px;margin-top:3px;padding-top:3px;border-top:1px solid rgba(99,102,241,0.15);">
         <span style="color:#94a3b8;">ATR:</span><span id="ciAtr" style="color:#22c55e;"></span>
-        <span style="color:#94a3b8;">BP:</span><span id="ciBp" style="color:#22c55e;"></span>
+        <span style="color:#94a3b8;">BCR:</span><span id="ciBp" style="color:#22c55e;"></span>
       </div>
       <div style="margin-top:4px;border-top:1px solid rgba(99,102,241,0.2);padding-top:3px;"></div>
       <table id="ciMtfTable" style="width:100%;border-collapse:collapse;font-size:9px;">
@@ -1879,7 +1879,8 @@ function _handleChartClick(param) {
         document.getElementById('ciClose').textContent = lcd.candles.close[idx] != null ? Number(lcd.candles.close[idx]).toFixed(2) : '-';
         var _co = lcd.candles.close[idx], _oo = lcd.candles.open[idx], _ho = lcd.candles.high[idx], _lo = lcd.candles.low[idx];
         var _bp = (_ho - _lo) > 0 ? Math.abs(_co - _oo) / (_ho - _lo) * 100 : 0;
-        document.getElementById('ciAtr').textContent = _atrArray && _atrArray[idx] != null ? Number(_atrArray[idx]).toFixed(2) : '-';
+        var _rngRatio = (_atrArray && _atrArray[idx] > 0) ? (_ho - _lo) / _atrArray[idx] : 0;
+        document.getElementById('ciAtr').textContent = _rngRatio.toFixed(2);
         document.getElementById('ciBp').textContent = _bp.toFixed(0) + '%';
         ciPopulateMtf(idx);
         showCandleInfoPanel(param.point.x, param.point.y);
