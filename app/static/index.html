@@ -1163,7 +1163,7 @@ function _saveDrawings() {
   try {
     var data = {
       boxes: _positionDrawings.map(function(p) {
-        return { time: p.time, entry: p.entry, sl: p.sl, tp: p.tp, isLong: p.isLong };
+        return { time: p.time, entry: p.entry, sl: p.sl, tp: p.tp, isLong: p.isLong, boxBars: p.boxBars };
       }),
       trends: _trendLines.map(function(t) {
         return { x1: t.x1, y1: t.y1, x2: t.x2, y2: t.y2 };
@@ -1212,11 +1212,11 @@ function _applyDrawings(saved) {
   try {
     if (Array.isArray(saved)) {
       saved.forEach(function(d) {
-        _positionDrawings.push({ time: d.time, entry: d.entry, sl: d.sl, tp: d.tp, isLong: d.isLong, slLine: null, tpLine: null, entryLine: null });
+        _positionDrawings.push({ time: d.time, entry: d.entry, sl: d.sl, tp: d.tp, isLong: d.isLong, slLine: null, tpLine: null, entryLine: null, boxBars: d.boxBars || _boxBars });
       });
     } else {
       (saved.boxes || []).forEach(function(d) {
-        _positionDrawings.push({ time: d.time, entry: d.entry, sl: d.sl, tp: d.tp, isLong: d.isLong, slLine: null, tpLine: null, entryLine: null });
+        _positionDrawings.push({ time: d.time, entry: d.entry, sl: d.sl, tp: d.tp, isLong: d.isLong, slLine: null, tpLine: null, entryLine: null, boxBars: d.boxBars || _boxBars });
       });
       _trendLines = (saved.trends || []).map(function(t) {
         var x1 = t.x1, x2 = t.x2;
@@ -1705,7 +1705,11 @@ function _redrawCanvas() {
   });
 
   // Position drawings (Long/Short toolbar tools)
+  var _pBw = bw;
   _positionDrawings.forEach(function(p) {
+    if (p.boxBars) {
+      try { var _plr = chart.timeScale().getVisibleLogicalRange(); if (_plr) { var _pbs = chart.timeScale().width() / Math.max(1, _plr.to - _plr.from); _pBw = Math.round(p.boxBars * _pbs); } } catch(e) {}
+    } else { _pBw = bw; }
     var px = chart.timeScale().timeToCoordinate(p.time);
     if (px == null) return;
     px = Math.round(px);
@@ -1716,31 +1720,31 @@ function _redrawCanvas() {
     ey = Math.round(ey); sy = Math.round(sy); ty = Math.round(ty);
     var rT = Math.min(sy, ey), rB = Math.max(sy, ey);
     ctx.fillStyle = 'rgba(239,68,68,0.15)';
-    ctx.fillRect(px, rT, bw, rB - rT);
+    ctx.fillRect(px, rT, _pBw, rB - rT);
     var gT = Math.min(ey, ty), gB = Math.max(ey, ty);
     if (gB - gT > 0) {
       ctx.fillStyle = 'rgba(34,197,94,0.15)';
-      ctx.fillRect(px, gT, bw, gB - gT);
+      ctx.fillRect(px, gT, _pBw, gB - gT);
     }
     var bT = Math.min(sy, ty), bB = Math.max(sy, ty);
     ctx.strokeStyle = 'rgba(148,163,184,0.3)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(px, bT, bw, bB - bT);
+    ctx.strokeRect(px, bT, _pBw, bB - bT);
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 1;
     ctx.setLineDash([3, 3]);
-    ctx.beginPath(); ctx.moveTo(px, sy); ctx.lineTo(px + bw, sy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px, sy); ctx.lineTo(px + _pBw, sy); ctx.stroke();
     ctx.setLineDash([]);
     ctx.strokeStyle = '#22c55e';
-    ctx.beginPath(); ctx.moveTo(px, ty); ctx.lineTo(px + bw, ty); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px, ty); ctx.lineTo(px + _pBw, ty); ctx.stroke();
     ctx.fillStyle = 'rgba(239,68,68,0.5)';
     ctx.beginPath();
-    ctx.arc(px + bw - 8, sy, 5, 0, 2 * Math.PI);
+    ctx.arc(px + _pBw - 8, sy, 5, 0, 2 * Math.PI);
     ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,0.7)';
     ctx.font = 'bold 9px sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('✕', px + bw - 8, sy);
+    ctx.fillText('✕', px + _pBw - 8, sy);
     // RR label updates on drag
     var R = Math.abs(p.entry - p.sl);
     var reward = Math.abs(p.tp - p.entry);
@@ -1749,7 +1753,7 @@ function _redrawCanvas() {
     ctx.font = '10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('R:R=> ' + rr.toFixed(1) + 'R', px + bw / 2, (sy + ey) / 2);
+    ctx.fillText('R:R=> ' + rr.toFixed(1) + 'R', px + _pBw / 2, (sy + ey) / 2);
   });
 
   // --- Indicator ribbon fills ---
@@ -1944,7 +1948,7 @@ function _handleChartClick(param) {
       sl = price + atrDist;
       tp = price - 2 * atrDist;
     }
-    _positionDrawings.push({ time: time, entry: price, sl: sl, tp: tp, isLong: isLong, slLine: null, tpLine: null, entryLine: null });
+    _positionDrawings.push({ time: time, entry: price, sl: sl, tp: tp, isLong: isLong, slLine: null, tpLine: null, entryLine: null, boxBars: _boxBars });
     _saveDrawings();
     _redrawCanvas();
     _deactivateTool();
@@ -2011,14 +2015,18 @@ function _getDragTarget(x, y) {
     var sy = candleSeries.priceToCoordinate(p.sl);
     var ty = candleSeries.priceToCoordinate(p.tp);
     if (sy == null || ty == null) continue;
-    var insideX = px <= x && x <= px + bw;
-    if (Math.abs(x - (px + bw - 8)) <= 10 && Math.abs(y - sy) <= 10)
+    var pbw = bw;
+    if (p.boxBars) {
+      try { var plr = chart.timeScale().getVisibleLogicalRange(); if (plr) { var pbs = chart.timeScale().width() / Math.max(1, plr.to - plr.from); pbw = Math.round(p.boxBars * pbs); } } catch(e) {}
+    }
+    var insideX = px <= x && x <= px + pbw;
+    if (Math.abs(x - (px + pbw - 8)) <= 10 && Math.abs(y - sy) <= 10)
       return { drawing: p, line: 'delete' };
     if (insideX && Math.abs(y - sy) <= 6) return { drawing: p, line: 'sl' };
     if (insideX && Math.abs(y - ty) <= 6) return { drawing: p, line: 'tp' };
     var boxY0 = Math.min(sy, ty);
     var boxY1 = Math.max(sy, ty);
-    if (boxY0 <= y && y <= boxY1 && Math.abs(x - (px + bw)) <= 6)
+    if (boxY0 <= y && y <= boxY1 && Math.abs(x - (px + pbw)) <= 6)
       return { drawing: p, line: 'width' };
     if (insideX && boxY0 <= y && y <= boxY1)
       return { drawing: p, line: 'move' };
@@ -2270,8 +2278,7 @@ function _dragMoveHandler(xy) {
       var lr = chart.timeScale().getVisibleLogicalRange();
       if (lr) {
         var barSpacing = chart.timeScale().width() / Math.max(1, lr.to - lr.from);
-        _boxBars = Math.max(1, (xy.x - px) / barSpacing);
-        localStorage.setItem('dd_boxBars', _boxBars);
+        _dragState.drawing.boxBars = Math.max(1, (xy.x - px) / barSpacing);
         _redrawCanvas();
       }
     }
