@@ -1057,7 +1057,7 @@ function initChart() {
 
   try {
     chart = LightweightCharts.createChart(document.getElementById('chart'), {
-      layout: { background: { color: '#111827' }, textColor: '#9ca3af', fontSize: 10 },
+      layout: { background: { color: '#111827' }, textColor: '#9ca3af', fontSize: 10, attributionLogo: false },
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
       crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { color: '#6366f1', width: 1, style: 3 }, horzLine: { color: '#6366f1', width: 1, style: 3 } },
       rightPriceScale: { borderColor: '#374151' },
@@ -1086,21 +1086,18 @@ function initChart() {
     });
 
     volumeChart = LightweightCharts.createChart(document.getElementById('chartVolume'), {
-      layout: { background: { color: 'transparent' }, textColor: '#6b7280', fontSize: 9 },
+      layout: { background: { color: 'transparent' }, textColor: '#6b7280', fontSize: 9, attributionLogo: false },
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
-      rightPriceScale: { borderColor: 'transparent', visible: false },
-      timeScale: { visible: true, borderColor: '#374151', barSpacing: 4, timeVisible: true, secondsVisible: false,
-        tickMarkFormatter: chart.options().timeScale.tickMarkFormatter,
-      },
+      rightPriceScale: { borderColor: 'transparent', visible: false, scaleMargins: { top: 0, bottom: 0 } },
+      leftPriceScale: { visible: false },
+      timeScale: { visible: false, barSpacing: 4 },
       handleScroll: false,
       handleScale: false,
       localization: chart.options().localization,
     });
     volumeSeries = volumeChart.addHistogramSeries({
       color: '#26a69a', priceFormat: { type: 'volume' },
-      priceScaleId: '',
     });
-    volumeChart.priceScale('').applyOptions({ scaleMargins: { top: 0, bottom: 0 } });
     // Sync volume time scale with main chart (with loop guard)
     var _volSyncGuard = false;
     chart.timeScale().subscribeVisibleTimeRangeChange(function(range) {
