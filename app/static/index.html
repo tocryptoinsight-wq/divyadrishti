@@ -5122,11 +5122,7 @@ async function fetchChartData() {
     const now = Math.floor(Date.now() / 1000);
     const currentPeriod = Math.floor(now / resSec) * resSec;
     if (currentPeriod !== realtimeCandle.time) {
-      var initLc = (lc > 0) ? lc : realtimeCandle.close;
-      if (realtimeCandle.close > 0) {
-        if (initLc > realtimeCandle.close * 1.5) initLc = realtimeCandle.close;
-        if (initLc < realtimeCandle.close / 1.5) initLc = realtimeCandle.close;
-      }
+      var initLc = (lc > 0) ? lc : (realtimeCandle.close > 0 ? realtimeCandle.close : lp);
       var initHigh = Math.max(lp, initLc);
       var initLow = Math.min(lp, initLc);
       realtimeCandle = { time: currentPeriod, open: initLc, high: initHigh, low: initLow, close: lp };
