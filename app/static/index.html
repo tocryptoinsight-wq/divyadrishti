@@ -2988,6 +2988,7 @@ function _findScreenerIdx(sym) {
 }
 
 var _changeSymbolReq = 0;
+var _analysisAbortController = null;
 async function changeSymbol(symbol) {
   _saveDrawings();
   _saveIndicatorState();
@@ -3027,6 +3028,8 @@ async function changeSymbol(symbol) {
   // Run chart analysis + screener in parallel
   _chartLoadedForSymbol = false;
   document.getElementById('lastUpdate').textContent = 'Loading...';
+  if (_analysisAbortController) _analysisAbortController.abort();
+  _analysisAbortController = new AbortController();
   var _anP = fetchAnalysis();
   var _scP = fetchScreener();
   _anP.then(function(success) {
@@ -3677,7 +3680,7 @@ async function fetchAnalysis() {
     const cached = _analysisCache.get(cacheKey);
     let url = API + '/analysis/' + symbol + '?resolution=' + res;
     if (cached) url += '&since=' + cached.lastCandleTime;
-    const resp = await fetch(url);
+    const resp = await fetch(url, _analysisAbortController ? { signal: _analysisAbortController.signal } : {});
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     if (data.error) { showError(data.error); return false; }
@@ -3835,7 +3838,7 @@ function renderChart(data) {
 
   const candleData = [];
   for (let i = 0; i < times.length; i++) {
-    if (h[i] <= 0 || l[i] <= 0) continue;
+    if (h[i] <= 0 || l[i] <= 0 || isNaN(o[i]) || isNaN(h[i]) || isNaN(l[i]) || isNaN(c[i])) continue;
     candleData.push({ time: Math.floor(times[i]), open: o[i], high: h[i], low: l[i], close: c[i] });
   }
   if (candleData.length === 0) return;
@@ -5489,6 +5492,7 @@ async function _updateRealTradeHistory() {
 }
 
 function showError(msg) {
+  console.error('Error:', msg);
   const el = document.getElementById('exeBtn');
   el.textContent = 'Error: ' + msg;
   el.style.background = '#440000';

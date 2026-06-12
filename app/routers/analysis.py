@@ -306,23 +306,47 @@ async def get_analysis(
     main_res, main_sec = RESOLUTION_MAP.get(resolution, ("5m", 300))
 
     if since is not None:
-        data_main = await delta_client.get_candles(symbol, main_res, start=since - 150 * main_sec)
+        try:
+            data_main = await delta_client.get_candles(symbol, main_res, start=since - 150 * main_sec)
+        except Exception as e:
+            return {"error": f"Failed to fetch {main_res} data: {e}"}
         if len(data_main["close"]) < 100:
             return {"error": "Not enough data"}
-        data_5m = data_main if main_res == "5m" else await delta_client.get_candles(symbol, "5m", start=since - 150 * 300)
-        data_15m, data_1h = await asyncio.gather(
-            delta_client.get_candles(symbol, "15m", start=since - 150 * 900),
-            delta_client.get_candles(symbol, "1h", start=since - 100 * 3600),
-        )
+        if main_res == "5m":
+            data_5m = data_main
+        else:
+            try:
+                data_5m = await delta_client.get_candles(symbol, "5m", start=since - 150 * 300)
+            except Exception as e:
+                return {"error": f"Failed to fetch 5m data: {e}"}
+        try:
+            data_15m, data_1h = await asyncio.gather(
+                delta_client.get_candles(symbol, "15m", start=since - 150 * 900),
+                delta_client.get_candles(symbol, "1h", start=since - 100 * 3600),
+            )
+        except Exception as e:
+            return {"error": f"Failed to fetch 15m/1h data: {e}"}
     else:
-        data_main = await delta_client.get_candles(symbol, main_res, limit=500)
+        try:
+            data_main = await delta_client.get_candles(symbol, main_res, limit=500)
+        except Exception as e:
+            return {"error": f"Failed to fetch {main_res} data: {e}"}
         if len(data_main["close"]) < 100:
             return {"error": "Not enough data"}
-        data_5m = data_main if main_res == "5m" else await delta_client.get_candles(symbol, "5m", limit=500)
-        data_15m, data_1h = await asyncio.gather(
-            delta_client.get_candles(symbol, "15m", limit=500),
-            delta_client.get_candles(symbol, "1h", limit=500),
-        )
+        if main_res == "5m":
+            data_5m = data_main
+        else:
+            try:
+                data_5m = await delta_client.get_candles(symbol, "5m", limit=500)
+            except Exception as e:
+                return {"error": f"Failed to fetch 5m data: {e}"}
+        try:
+            data_15m, data_1h = await asyncio.gather(
+                delta_client.get_candles(symbol, "15m", limit=500),
+                delta_client.get_candles(symbol, "1h", limit=500),
+            )
+        except Exception as e:
+            return {"error": f"Failed to fetch 15m/1h data: {e}"}
 
     analysis_main = compute_analysis(
         data_main["close"], data_main["high"], data_main["low"],
