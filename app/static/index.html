@@ -2046,11 +2046,30 @@ document.getElementById('chartToolbar').addEventListener('click', function(e) {
   }
 });
 
+// One-time migration: reset toolbar saved states so expanded HTML default takes effect
+if (!localStorage.getItem('dd_migrated_v3')) {
+  try {
+    localStorage.removeItem('dd_toolbarOpen');
+    localStorage.removeItem('dd_indicatorOpen');
+    var _s = localStorage.getItem('dd_indicatorState');
+    if (_s) {
+      var _p = JSON.parse(_s);
+      if (_p.chartToolbarOpen !== undefined || _p.indicatorToolbarOpen !== undefined) {
+        delete _p.chartToolbarOpen;
+        delete _p.indicatorToolbarOpen;
+        localStorage.setItem('dd_indicatorState', JSON.stringify(_p));
+      }
+    }
+  } catch(e) {}
+  localStorage.setItem('dd_migrated_v3', '1');
+}
+
 // Toolbar collapse/expand toggle
 (function() {
   var tb = document.getElementById('chartToolbar');
   var btn = document.getElementById('toolbarToggle');
   if (tb && btn) {
+    if (localStorage.getItem('dd_toolbarOpen') === 'false') tb.classList.add('collapsed');
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       tb.classList.toggle('collapsed');
@@ -2792,6 +2811,12 @@ function toggleIndicatorToolbar() {
   }
 }
 
+// Restore indicator toolbar state
+(function() {
+  var tb = document.getElementById('indicatorToolbar');
+  if (tb && localStorage.getItem('dd_indicatorOpen') === 'false') tb.classList.add('collapsed');
+})();
+
 async function addIndicator(id) {
   const meta = _indicatorMetas.find(m => m.id === id);
   if (!meta) return;
@@ -2964,6 +2989,15 @@ async function _restoreIndicatorState() {
   try {
     var saved = JSON.parse(raw);
     if (!saved.indicators) { _renderActiveIndicators(); return; }
+    // Restore toolbar states (only collapse if explicitly saved as false)
+    if (saved.chartToolbarOpen === false) {
+      var ctb = document.getElementById('chartToolbar');
+      if (ctb) ctb.classList.add('collapsed');
+    }
+    if (saved.indicatorToolbarOpen === false) {
+      var itb = document.getElementById('indicatorToolbar');
+      if (itb) itb.classList.add('collapsed');
+    }
     // Restore indicators — save state only, defer series creation if chart not ready
     var ids = Object.keys(saved.indicators);
     for (var i = 0; i < ids.length; i++) {
