@@ -2051,7 +2051,6 @@ document.getElementById('chartToolbar').addEventListener('click', function(e) {
   var tb = document.getElementById('chartToolbar');
   var btn = document.getElementById('toolbarToggle');
   if (tb && btn) {
-    if (localStorage.getItem('dd_toolbarOpen') === 'false') tb.classList.add('collapsed');
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       tb.classList.toggle('collapsed');
@@ -2793,12 +2792,6 @@ function toggleIndicatorToolbar() {
   }
 }
 
-// Restore indicator toolbar state
-(function() {
-  var tb = document.getElementById('indicatorToolbar');
-  if (tb && localStorage.getItem('dd_indicatorOpen') === 'false') tb.classList.add('collapsed');
-})();
-
 async function addIndicator(id) {
   const meta = _indicatorMetas.find(m => m.id === id);
   if (!meta) return;
@@ -2971,21 +2964,6 @@ async function _restoreIndicatorState() {
   try {
     var saved = JSON.parse(raw);
     if (!saved.indicators) { _renderActiveIndicators(); return; }
-    // Restore toolbar states
-    if (saved.chartToolbarOpen === false) {
-      var ctb = document.getElementById('chartToolbar');
-      if (ctb) ctb.classList.add('collapsed');
-    } else {
-      var ctb = document.getElementById('chartToolbar');
-      if (ctb) ctb.classList.remove('collapsed');
-    }
-    if (saved.indicatorToolbarOpen === false) {
-      var itb = document.getElementById('indicatorToolbar');
-      if (itb) itb.classList.add('collapsed');
-    } else {
-      var itb = document.getElementById('indicatorToolbar');
-      if (itb) itb.classList.remove('collapsed');
-    }
     // Restore indicators — save state only, defer series creation if chart not ready
     var ids = Object.keys(saved.indicators);
     for (var i = 0; i < ids.length; i++) {
