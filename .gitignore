@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+server.log
+
+# Electron
+electron/node_modules/
+dist-electron/
+desktop/build/
+
+# Large binaries
+services/cloudflared/cloudflared.exe
+services/cloudflared/cloudflared
+
+# Runtime
+restart/__pycache__/
+restart/current_port.json
+restart/helper.log
+restart/restart/__pycache__/
+restart/restart/current_port.json
+restart/restart/helper.log
+tests/__pycache__/
+
+# Environment
+.env
+.env.local
