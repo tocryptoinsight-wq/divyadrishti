@@ -1735,7 +1735,7 @@ function _redrawCanvas() {
     ctx.fillStyle = '#eab308';
     ctx.font = '10px "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-    ctx.fillText('H: ' + m.high.toFixed(2), w - 80, hy - 2);
+    ctx.fillText('H: ' + m.high.toFixed(2), w - 80, hy - 10);
     ctx.fillText('L: ' + m.low.toFixed(2), w - 80, ly + 10);
     // Delete button
     var dY = Math.round((hy + ly) / 2);
