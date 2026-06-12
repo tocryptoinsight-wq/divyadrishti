@@ -1735,8 +1735,8 @@ function _redrawCanvas() {
     ctx.fillStyle = '#eab308';
     ctx.font = '10px "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-    ctx.fillText('High: ' + m.high.toFixed(2), w - 20, hy - 2);
-    ctx.fillText('Low: ' + m.low.toFixed(2), w - 20, ly + 10);
+    ctx.fillText('H: ' + m.high.toFixed(2), w - 80, hy - 2);
+    ctx.fillText('L: ' + m.low.toFixed(2), w - 80, ly + 10);
     // Delete button
     var dY = Math.round((hy + ly) / 2);
     ctx.fillStyle = 'rgba(239,68,68,0.5)';
