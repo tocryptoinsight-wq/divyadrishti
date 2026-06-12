@@ -41,7 +41,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .sidebar-right { width: 350px; background: var(--bg-secondary); padding: 8px; border-left: 1px solid var(--border); overflow: auto hidden; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; }
 .main { flex: 1; display: flex; flex-direction: column; padding: 12px; height: 100vh; min-width: 0; overflow: hidden; }
 .chart-container { flex: 7; position: relative; border: 1px solid var(--border); border-radius: 0px; overflow: hidden; margin: 4px 0; background: var(--bg-tertiary); min-height: 0; }
-.live-trading { flex: 3; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; margin: 4px 0; padding: 6px; overflow: hidden; min-height: 0; display:flex;flex-direction:column; }
+.live-trading { flex: 3; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 0px; margin: 4px 0; padding: 6px; overflow: hidden; min-height: 0; display:flex;flex-direction:column; }
 .lt-tab { font-size:10px;padding:3px 10px;border-radius:4px;cursor:pointer;color:var(--text-muted);background:transparent;border:1px solid var(--border);font-weight:600;user-select:none; }
 .lt-tab.active { background:var(--bg-tertiary);color:var(--text-primary);border-color:var(--accent); }
 #ltTabLive::after { content:' |';color:var(--border);font-size:11px;pointer-events:none; }
@@ -3836,7 +3836,6 @@ function renderChart(data) {
   realtimeCandle = { time: candleData[lcIdx].time, open: candleData[lcIdx].open, high: candleData[lcIdx].high, low: candleData[lcIdx].low, close: candleData[lcIdx].close };
   if (pendingScroll) {
     try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
-    try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
     var _expanded = document.querySelector('.app-layout')?.classList.contains('hide-left');
     try { chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, candleData.length - (_expanded ? 200 : 120)), to: candleData.length + 2 }); } catch(e) {}
   }
@@ -3850,7 +3849,6 @@ function scrollToLatest(data, count) {
   const n = count || 120;
   const logicalFrom = Math.max(0, times.length - n);
   try { chart.timeScale().applyOptions({ barSpacing: 4 }); } catch(e) {}
-  try { chart.priceScale('right').applyOptions({ autoScale: true }); } catch(e) {}
   try { chart.timeScale().setVisibleLogicalRange({ from: logicalFrom, to: times.length + 2 }); } catch(e) {}
 }
 
