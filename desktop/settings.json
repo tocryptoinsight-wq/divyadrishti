@@ -1,0 +1,10 @@
+{
+    "delta_api_base": "https://api.india.delta.exchange/v2",
+    "port": 8000,
+    "screener_symbols": [
+        "BTCUSD",
+        "ETHUSD",
+        "SOLUSD",
+        "PAXGUSD"
+    ]
+}

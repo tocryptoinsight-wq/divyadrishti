@@ -1,0 +1,15 @@
+{
+  "name": "divya-drishti",
+  "version": "3.0.0",
+  "description": "DivyaDrishti Trading Scanner",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "npx @electron/packager . DivyaDrishti --platform=win32 --arch=x64 --out=../dist-electron --extra-resource=../build/backend --extra-resource=../desktop --overwrite"
+  },
+  "author": "DivyaDrishti",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}

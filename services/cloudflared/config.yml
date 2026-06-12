@@ -1,0 +1,6 @@
+tunnel: divyadrishti
+credentials-file: D:\DivyaDrishti\DDTools-live\services\cloudflared\337379e7-cf4c-4857-a813-7b0f9f72173c.json
+ingress:
+  - hostname: divyadrishti.site
+    service: http://localhost:8080
+  - service: http_status:404

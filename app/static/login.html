@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DivyaDrishti - Login</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DDScanner">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  background: radial-gradient(ellipse at 50% 0%, #131c31 0%, #0b1121 70%);
+  color: #e2e8f0;
+  font-family: 'Segoe UI', -apple-system, Arial, sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; min-height:100vh;
+}
+.bg-grid {
+  position:fixed; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.bg-glow {
+  position:fixed; top:-30vh; left:50%; transform:translateX(-50%);
+  width:80vh; height:80vh; border-radius:50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.card {
+  position:relative; width:380px;
+  background: linear-gradient(135deg, rgba(19,28,49,0.95), rgba(15,23,41,0.95));
+  border:1px solid rgba(30,45,74,0.6);
+  border-radius:16px; padding:0; overflow:hidden;
+  backdrop-filter:blur(20px); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.card-inner { padding:36px 36px 32px; }
+.card-top {
+  text-align:center; margin-bottom:28px;
+  position:relative;
+}
+.card-top .logo {
+  font-size:26px; font-weight:700; letter-spacing:0.5px;
+  background: linear-gradient(135deg, #e2e8f0, #818cf8);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.card-top .tagline {
+  font-size:11px; color:#64748b; margin-top:6px;
+  letter-spacing:0.3px;
+}
+/* Views */
+.view { display:none; }
+.view.active { display:block; animation:fadeSlideIn 0.35s ease; }
+@keyframes fadeSlideIn {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+/* Form */
+.form-group { margin-bottom:18px; }
+.form-group label {
+  display:block; font-size:11px; color:#94a3b8; margin-bottom:5px;
+  font-weight:500; letter-spacing:0.2px;
+}
+.form-group input {
+  width:100%; padding:11px 14px;
+  background:rgba(15,23,41,0.8);
+  border:1px solid rgba(30,45,74,0.6);
+  border-radius:8px; color:#e2e8f0; font-size:14px;
+  outline:none; transition:all 0.2s;
+}
+.form-group input:focus {
+  border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.12);
+}
+.form-group input::placeholder { color:#475569; }
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:36px}
+.pw-toggle{
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; padding:4px;
+  color:#64748b; font-size:16px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0.7; transition:opacity 0.15s;
+}
+.pw-toggle:hover{opacity:1;color:#e2e8f0}
+.form-group input.error {
+  border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,0.1);
+}
+.btn {
+  width:100%; padding:11px;
+  border:none; border-radius:8px;
+  font-size:14px; font-weight:600; cursor:pointer;
+  transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-primary {
+  background:linear-gradient(135deg, #6366f1, #818cf8);
+  color:#fff; margin-top:4px;
+}
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(99,102,241,0.4); }
+.btn-primary:active { transform:translateY(0); }
+.btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+.btn-ghost {
+  background:transparent; color:#94a3b8; border:1px solid rgba(30,45,74,0.6);
+  font-size:12px; font-weight:500;
+}
+.btn-ghost:hover { border-color:#6366f1; color:#e2e8f0; }
+.btn-outline-danger {
+  background:transparent; color:#f87171; border:1px solid rgba(239,68,68,0.3);
+  font-size:12px; font-weight:500;
+}
+.btn-outline-danger:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+.btn-outline-warning {
+  background:transparent; color:#fbbf24; border:1px solid rgba(251,191,36,0.3);
+  font-size:12px; font-weight:500;
+}
+.btn-outline-warning:hover { background:rgba(251,191,36,0.1); border-color:#fbbf24; }
+/* Messages */
+.msg { font-size:12px; text-align:center; margin-top:14px; min-height:20px; transition:all 0.2s; }
+.msg-error { color:#f87171; }
+.msg-info { color:#60a5fa; }
+.msg-loading { color:#94a3b8; display:flex; align-items:center; justify-content:center; gap:8px; }
+.spinner {
+  display:inline-block; width:16px; height:16px;
+  border:2px solid #334155; border-top-color:#6366f1;
+  border-radius:50%; animation:spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+/* Device list */
+.device-list { margin:8px 0 12px; }
+.device-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; margin-bottom:8px;
+  background:rgba(15,23,41,0.6);
+  border:1px solid rgba(30,45,74,0.5);
+  border-radius:10px; transition:all 0.2s;
+  cursor:default;
+}
+.device-item:hover { border-color:rgba(99,102,241,0.3); background:rgba(15,23,41,0.8); }
+.device-item .dev-icon {
+  width:38px; height:38px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0;
+  background:rgba(99,102,241,0.1);
+}
+.device-item .dev-info { flex:1; min-width:0; }
+.device-item .dev-name { font-size:13px; font-weight:600; color:#e2e8f0; }
+.device-item .dev-meta { font-size:10px; color:#64748b; margin-top:2px; }
+.device-item .dev-btn {
+  flex-shrink:0; padding:6px 12px; border-radius:6px;
+  border:1px solid rgba(239,68,68,0.3); background:transparent;
+  color:#f87171; font-size:11px; font-weight:600; cursor:pointer;
+  transition:all 0.15s; white-space:nowrap;
+}
+.device-item .dev-btn:hover { background:rgba(239,68,68,0.15); border-color:#ef4444; }
+.device-item .dev-btn.loading { opacity:0.5; pointer-events:none; }
+.device-list-header {
+  display:flex; align-items:center; gap:8px; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid rgba(30,45,74,0.5);
+}
+.device-list-header .dlh-icon {
+  font-size:20px; flex-shrink:0;
+}
+.device-list-header .dlh-text { flex:1; }
+.device-list-header .dlh-text strong { font-size:14px; color:#e2e8f0; display:block; }
+.device-list-header .dlh-text span { font-size:11px; color:#64748b; }
+/* Session Modal */
+.session-modal-overlay {
+  position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.6);
+  display:none; justify-content:center; align-items:center;
+  backdrop-filter:blur(4px); animation:fadeIn 0.2s ease;
+}
+.session-modal-overlay.active{display:flex}
+.session-modal-box {
+  background:linear-gradient(135deg, rgba(19,28,49,0.98), rgba(15,23,41,0.98));
+  border:1px solid rgba(30,45,74,0.6);
+  border-radius:16px; padding:28px;
+  max-width:420px; width:90%;
+  box-shadow:0 25px 60px rgba(0,0,0,0.6);
+  animation:fadeSlideIn 0.3s ease;
+}
+/* Cache clear dot */
+.cache-dot {
+  position:absolute; top:12px; right:12px; z-index:10;
+  width:10px; height:10px; border-radius:50%;
+  background:rgba(34,197,94,0.5); cursor:pointer;
+  box-shadow:0 0 6px rgba(34,197,94,0.3);
+  transition:all 0.2s;
+}
+.cache-dot:hover{background:rgba(34,197,94,0.9);box-shadow:0 0 10px rgba(34,197,94,0.5);width:12px;height:12px}
+.cache-dot.active{background:rgba(99,102,241,0.8);width:12px;height:12px}
+/* Footer */
+.footer { margin-top:20px; font-size:10px; color:#334155; text-align:center; letter-spacing:0.3px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="card" id="card">
+  <div class="cache-dot" id="cacheDot" title="Clear cache &amp; reload"></div>
+  <div class="card-inner">
+    <div class="card-top">
+      <div class="logo">&#x1F52E; DIVYADRISHTI</div>
+      <div class="tagline">Trading Intelligence Platform</div>
+    </div>
+
+    <!-- Login view -->
+    <div class="view active" id="viewLogin">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" autocomplete="username" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+          <button type="button" class="pw-toggle" id="pwToggle" tabindex="-1" aria-label="Show password">&#x1F441;</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+        <span id="loginBtnText">Sign In</span>
+        <span class="spinner" id="loginBtnSpinner" style="display:none;"></span>
+      </button>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Device manager modal -->
+<div class="session-modal-overlay" id="sessionModal">
+  <div class="session-modal-box">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px;margin-bottom:6px">&#x1F6AB;</div>
+      <div style="font-size:16px;font-weight:700">Device Limit Reached</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px;line-height:1.4">You have 3 active sessions. Logout a device to sign in on this one.</div>
+    </div>
+    <div class="device-list" id="deviceList"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-ghost" onclick="showLoginView()" style="flex:1;">&#x2190; Back</button>
+      <button class="btn btn-outline-warning" id="logoutAllBtn" onclick="logoutAllAndLogin()" style="flex:1;">
+        Logout All &amp; Sign In
+      </button>
+    </div>
+    <div class="msg" id="deviceMsg"></div>
+  </div>
+</div>
+<div class="footer">DivyaDrishti &middot; Trading System</div>
+
+<script>
+const API = '/api';
+let _pendingLoginData = null;
+
+function _detectDeviceName() {
+  const ua = navigator.userAgent;
+  let os = 'Unknown';
+  if (ua.includes('Windows')) os = 'Windows';
+  else if (ua.includes('Mac OS')) os = 'macOS';
+  else if (ua.includes('Linux') && !ua.includes('Android')) os = 'Linux';
+  else if (ua.includes('Android')) os = 'Android';
+  else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+  let browser = 'Browser';
+  if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
+  else if (ua.includes('Firefox')) browser = 'Firefox';
+  else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+  else if (ua.includes('Edg')) browser = 'Edge';
+  else if (ua.includes('OPR') || ua.includes('Opera')) browser = 'Opera';
+  return browser + ' on ' + os;
+}
+
+function setMsg(el, text, type) {
+  el.textContent = text;
+  el.className = 'msg' + (type ? ' msg-' + type : '');
+  el.style.display = text ? 'block' : 'none';
+}
+
+function setInputError(id, hasError) {
+  document.getElementById(id).classList.toggle('error', hasError);
+}
+
+function showView(name) {
+  document.getElementById('viewLogin').classList.toggle('active', name === 'login');
+  setMsg(document.getElementById('loginMsg'), '', '');
+  if (name === 'login') {
+    document.getElementById('loginBtnText').style.display = '';
+    document.getElementById('loginBtnSpinner').style.display = 'none';
+    document.getElementById('loginBtn').disabled = false;
+  }
+}
+
+function showSessionModal(show) {
+  document.getElementById('sessionModal').classList.toggle('active', show);
+  if (!show) setMsg(document.getElementById('deviceMsg'), '', '');
+}
+
+function showLoginView() {
+  showSessionModal(false);
+  setMsg(document.getElementById('loginMsg'), '', '');
+}
+
+function _deviceIcon(name) {
+  const l = name.toLowerCase();
+  if (l.includes('windows')) return '&#x1F4BB;';
+  if (l.includes('mac') || l.includes('ios')) return '&#x1F4F1;';
+  if (l.includes('android') || l.includes('linux')) return '&#x1F4F2;';
+  if (l.includes('iphone')) return '&#x1F4F1;';
+  return '&#x1F5B4;';
+}
+
+function _timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr.replace(' ', 'T'));
+  if (isNaN(d.getTime())) return '';
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (sec < 60) return 'just now';
+  if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+  return Math.floor(sec / 86400) + 'd ago';
+}
+
+function renderDeviceList(sessions) {
+  const container = document.getElementById('deviceList');
+  container.innerHTML = sessions.map((s, i) => `
+    <div class="device-item" style="animation:fadeIn 0.3s ease ${i * 0.06}s both;">
+      <div class="dev-icon">${_deviceIcon(s.device_name)}</div>
+      <div class="dev-info">
+        <div class="dev-name">${s.device_name || 'Unknown'}</div>
+        <div class="dev-meta">
+          ${s.created_at ? new Date(s.created_at.replace(' ', 'T')).toLocaleDateString() + ' &middot; ' : ''}
+          active ${_timeAgo(s.last_active || s.created_at)}
+        </div>
+      </div>
+      <button class="dev-btn" data-id="${s.id}" onclick="logoutSessionAndLogin(this)">Logout &amp; Sign In</button>
+    </div>
+  `).join('');
+}
+
+async function doLogin(extra) {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!username || !password) {
+    setInputError('username', !username);
+    setInputError('password', !password);
+    setMsg(document.getElementById('loginMsg'), 'Please enter username and password', 'error');
+    return;
+  }
+  setInputError('username', false);
+  setInputError('password', false);
+
+  const btn = document.getElementById('loginBtn');
+  const msg = document.getElementById('loginMsg');
+  btn.disabled = true;
+  document.getElementById('loginBtnText').style.display = 'none';
+  document.getElementById('loginBtnSpinner').style.display = '';
+  setMsg(msg, 'Signing in...', 'loading');
+
+  const body = { username, password, device_name: _detectDeviceName(), ...(extra || {}) };
+
+  try {
+    const resp = await fetch(API + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+
+    document.getElementById('loginBtnText').style.display = '';
+    document.getElementById('loginBtnSpinner').style.display = 'none';
+    btn.disabled = false;
+
+    if (data.success) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('role', data.role);
+      window.location.href = '/';
+      return;
+    }
+
+    if (data.max_sessions) {
+      document.getElementById('loginBtnText').style.display = '';
+      document.getElementById('loginBtnSpinner').style.display = 'none';
+      btn.disabled = false;
+      _pendingLoginData = { username, password, device_name: _detectDeviceName() };
+      renderDeviceList(data.sessions || []);
+      showSessionModal(true);
+      return;
+    }
+
+    setMsg(msg, (data.detail || 'Invalid username or password') + '. Please verify your password or contact an admin if you believe it is correct.', 'error');
+  } catch (ex) {
+    document.getElementById('loginBtnText').style.display = '';
+    document.getElementById('loginBtnSpinner').style.display = 'none';
+    btn.disabled = false;
+    setMsg(document.getElementById('loginMsg'), 'Connection error. Is the server running?', 'error');
+  }
+}
+
+async function logoutSessionAndLogin(el) {
+  const sessionId = el.dataset.id;
+  el.classList.add('loading');
+  el.textContent = 'Signing in...';
+  setMsg(document.getElementById('deviceMsg'), '', '');
+
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    const resp = await fetch(API + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username, password,
+        device_name: _detectDeviceName(),
+        logout_session_id: parseInt(sessionId),
+      }),
+    });
+    const data = await resp.json();
+    if (data.success) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('role', data.role);
+      window.location.href = '/';
+      return;
+    }
+    setMsg(document.getElementById('deviceMsg'), data.detail || 'Login failed. Try again.', 'error');
+  } catch (ex) {
+    setMsg(document.getElementById('deviceMsg'), 'Connection error', 'error');
+  }
+  el.classList.remove('loading');
+  el.textContent = 'Logout & Sign In';
+}
+
+async function logoutAllAndLogin() {
+  const btn = document.getElementById('logoutAllBtn');
+  const msg = document.getElementById('deviceMsg');
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  setMsg(msg, '', '');
+
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    const resp = await fetch(API + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username, password,
+        device_name: _detectDeviceName(),
+        logout_all_sessions: true,
+      }),
+    });
+    const data = await resp.json();
+    if (data.success) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('role', data.role);
+      window.location.href = '/';
+      return;
+    }
+    setMsg(msg, data.detail || 'Login failed. Try again.', 'error');
+  } catch (ex) {
+    setMsg(msg, 'Connection error', 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Logout All & Sign In';
+}
+
+// Clear app cache
+function clearAppCache() {
+  var dot = document.getElementById('cacheDot');
+  dot.classList.add('active');
+  // Clear storage
+  try { localStorage.clear(); } catch(e) {}
+  try { sessionStorage.clear(); } catch(e) {}
+  // Clear Cache API
+  if ('caches' in window) {
+    caches.keys().then(function(names) {
+      names.forEach(function(n) { caches.delete(n); });
+    });
+  }
+  // Unregister service workers
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs) {
+      regs.forEach(function(r) { r.unregister(); });
+    });
+  }
+  setTimeout(function() { location.reload(true); }, 300);
+}
+document.getElementById('cacheDot').addEventListener('click', clearAppCache);
+
+// Show/hide password
+document.getElementById('pwToggle').addEventListener('click', function() {
+  var pw = document.getElementById('password');
+  if (pw.type === 'password') { pw.type = 'text'; this.innerHTML = '\u{1F441}\u200D\u{1F5E8}'; }
+  else { pw.type = 'password'; this.innerHTML = '\u{1F441}'; }
+});
+
+// Close session modal on backdrop click
+document.getElementById('sessionModal').addEventListener('click', function(e) {
+  if (e.target === this) showLoginView();
+});
+
+// Enter key handlers
+document.getElementById('username').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('password').focus();
+});
+document.getElementById('password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>

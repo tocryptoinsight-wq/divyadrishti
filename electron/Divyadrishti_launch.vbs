@@ -1,0 +1,1 @@
+Set fso = CreateObject("Scripting.FileSystemObject"): p = fso.GetParentFolderName(WScript.ScriptFullName): CreateObject("WScript.Shell").Run """" & fso.BuildPath(p, "node_modules\electron\dist\electron.exe") & """ """ & p & """", 1, False

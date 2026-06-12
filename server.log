@@ -1,0 +1,10 @@
+INFO:     Will watch for changes in these directories: ['E:\\DivyaDrishti\\DDTools-dev']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [7416] using WatchFiles
+INFO:     Started server process [24256]
+INFO:     Waiting for application startup.
+2026-06-12 13:51:31,764 [app.services.alert_service] INFO: Alert retry and tunnel monitors started
+INFO:     Application startup complete.
+INFO:     127.0.0.1:50445 - "GET /sw.js HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app\routers\analysis.py'. Reloading...
+ 

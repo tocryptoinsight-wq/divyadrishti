@@ -1,0 +1,919 @@
+
+--- Restart at 2026-05-17 08:33:56 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m23032[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:33:59 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m16680[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:35:39 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m2244[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:36:02 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m24144[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:37:35 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m3636[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:40:04 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m25848[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:42:50 ---
+Command: C:\Python314\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m12476[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:47:15 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m7376[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:47:17 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m27264[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:47:37 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m27052[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:48:18 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m23508[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:48:52 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m25376[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:52:46 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8001
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8001
+[restart.helper] Waiting for port 8001...
+[restart.helper] Starting uvicorn on port 8001
+[32mINFO[0m:     Started server process [[36m27256[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8001[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:54:47 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Port 8000 not free, finding next free port...
+[restart.helper] Starting uvicorn on port 8001
+[32mINFO[0m:     Started server process [[36m11172[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8001[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:57:23 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m20116[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 08:57:29 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m25188[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:20:43 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m11864[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:32:06 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m11912[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:32:37 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m9624[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:32:43 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m1572[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:32:53 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m25988[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:39:30 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m1736[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:49:01 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m24636[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:50:46 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m1460[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:50:48 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m10480[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:51:30 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m15572[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:53:11 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m23792[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 09:55:52 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m21460[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:01:38 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m14968[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:38:15 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m17856[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:42:40 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m11612[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:51:27 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m20788[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:51:45 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m12212[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:51:54 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m20744[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:53:02 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+[32mINFO[0m:     Started server process [[36m13584[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8000[0m (Press CTRL+C to quit)
+
+--- Restart at 2026-05-17 10:55:35 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 10:55:53 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 10:57:06 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:10:02 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:11:22 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:12:23 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:13:11 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:14:24 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:14:52 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:15:52 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:16:31 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:23:12 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:23:39 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:32:22 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:32:34 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:33:26 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:34:29 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:35:26 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:35:45 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:36:08 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:36:55 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:40:08 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:41:36 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:42:08 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:45:15 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:48:51 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:50:25 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:51:08 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 11:57:00 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:04:42 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:05:08 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:05:43 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:09:06 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:09:16 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:10:15 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:10:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:29:18 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:32:03 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:39:29 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:39:53 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:40:27 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:44:35 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:44:43 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:45:19 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:45:34 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:45:40 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:46:50 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:48:28 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:48:44 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:48:53 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:51:05 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 12:51:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 13:17:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 13:48:37 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 14:02:48 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 14:05:18 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 14:09:22 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:00:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:09:59 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:14:30 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:35:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:39:40 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:42:52 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 15:56:35 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 16:23:24 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 16:31:24 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 16:37:32 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:06:42 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:30:59 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:41:45 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:47:01 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:49:50 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 17:51:16 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-17 19:59:29 ---
+Command: E:\DDTools\DDScanner\.venv\Scripts\python.exe -m restart.helper 8000
+CWD: E:\DDTools\DDScanner
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-30 18:07:56 ---
+Command: E:\DivyaDrishti\DDTools-dev\services\..\.venv\Scripts\pythonw.exe -m restart.helper 8000
+CWD: E:\DivyaDrishti\DDTools-dev
+[restart.helper] Starting: preferred=8000
+[restart.helper] Waiting for port 8000...
+[restart.helper] Starting uvicorn on port 8000
+
+--- Restart at 2026-05-30 18:18:52 ---
+Command: E:\DivyaDrishti\DDTools-dev\.venv\Scripts\pythonw.exe -m restart.helper 8000
+CWD: E:\DivyaDrishti\DDTools-dev
+[restart.helper] Starting: preferred=8000
+[restart.helper] Port 8000 held by PID 7716 (foreign), falling back
+[restart.helper] Falling back to port 8001
+[restart.helper] Starting uvicorn on port 8001
