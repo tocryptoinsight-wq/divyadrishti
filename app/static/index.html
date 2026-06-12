@@ -40,7 +40,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .sidebar { width: 320px; background: var(--bg-secondary); padding: 8px; border-right: 1px solid var(--border); overflow: auto hidden; flex-shrink: 0; height: 100%; }
 .sidebar-right { width: 350px; background: var(--bg-secondary); padding: 8px; border-left: 1px solid var(--border); overflow: auto hidden; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; }
 .main { flex: 1; display: flex; flex-direction: column; padding: 12px; height: 100vh; min-width: 0; overflow: hidden; }
-.chart-container { flex: 7; position: relative; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 4px 0; background: var(--bg-tertiary); min-height: 0; }
+.chart-container { flex: 7; position: relative; border: 1px solid var(--border); border-radius: 0px; overflow: hidden; margin: 4px 0; background: var(--bg-tertiary); min-height: 0; }
 .live-trading { flex: 3; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; margin: 4px 0; padding: 6px; overflow: hidden; min-height: 0; display:flex;flex-direction:column; }
 .lt-tab { font-size:10px;padding:3px 10px;border-radius:4px;cursor:pointer;color:var(--text-muted);background:transparent;border:1px solid var(--border);font-weight:600;user-select:none; }
 .lt-tab.active { background:var(--bg-tertiary);color:var(--text-primary);border-color:var(--accent); }
@@ -84,10 +84,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .chart-container.tool-active { cursor:crosshair; }
 
 #chartToolbar {
-  position:absolute; top:4px; left:0px; z-index:100;
+  position:absolute; top:0px; left:0px; z-index:100;
   display:flex; flex-direction:column; align-items:center;
   background:rgba(15,23,42,0.88); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(99,102,241,0.25); border-radius:10px;
+  border:1px solid rgba(99,102,241,0.25); border-radius:0px;
   padding:0px; box-shadow:0 4px 24px rgba(0,0,0,0.5);
   transition:border-color 0.3s, box-shadow 0.3s;
 }
@@ -154,10 +154,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 #candleInfoToggle:active { transform:translateX(-50%) scale(0.92); }
 
 #indicatorToolbar {
-  position:absolute; top:4px; left:48px; z-index:99;
+  position:absolute; top:0px; left:36px; z-index:99;
   display:flex; flex-direction:column; align-items:center;
   background:rgba(15,23,42,0.88); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(99,102,241,0.25); border-radius:10px;
+  border:1px solid rgba(99,102,241,0.25); border-radius:0px;
   padding:4px; box-shadow:0 4px 24px rgba(0,0,0,0.5);
   transition:border-color 0.3s, box-shadow 0.3s;
 }
@@ -184,10 +184,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .indicator-item:hover { background:rgba(99,102,241,0.12); color:#c7d2fe; }
 
 @media (max-width:768px) {
-  #chartToolbar { top:4px; left:0px; padding:0px; }
+  #chartToolbar { top:0px; left:0px; padding:0px; }
   #toolbarToggle { width:16px; height:16px; font-size:10px; }
   #toolbarContent { gap:1px; }
-  #indicatorToolbar { left:28px; padding:2px; }
+  #indicatorToolbar { left:20px; padding:2px; }
   #indicatorToggle { height:16px; font-size:7px; padding:0 4px; }
 }
 
@@ -658,7 +658,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     <div id="chartFallback">Chart library not loaded. Check Internet connection for CDN access.</div>
     <canvas id="chartCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;"></canvas>
     <div id="chartAlert" style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;"></div>
-    <div id="indicatorToolbar" class="collapsed">
+    <div id="indicatorToolbar">
       <button id="indicatorToggle" onclick="toggleIndicatorToolbar()" title="Indicators" style="border-radius:5px">Indicators</button>
       <div id="indicatorContent">
         <div id="indicatorList" style="padding:2px 0;"></div>
@@ -704,7 +704,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
         <tbody id="ciMtfBody"></tbody>
       </table>
     </div>
-    <div id="chartToolbar" class="collapsed">
+    <div id="chartToolbar">
       <button id="toolbarToggle" title="Toggle toolbar" style="border-radius:5px">▼</button>
       <div id="toolbarContent">
         <button class="chart-tool" data-tool="trend" title="Trend Line">╱</button>
@@ -2051,7 +2051,7 @@ document.getElementById('chartToolbar').addEventListener('click', function(e) {
   var tb = document.getElementById('chartToolbar');
   var btn = document.getElementById('toolbarToggle');
   if (tb && btn) {
-    if (localStorage.getItem('dd_toolbarOpen') === 'true') tb.classList.remove('collapsed');
+    if (localStorage.getItem('dd_toolbarOpen') === 'false') tb.classList.add('collapsed');
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       tb.classList.toggle('collapsed');
@@ -2796,7 +2796,7 @@ function toggleIndicatorToolbar() {
 // Restore indicator toolbar state
 (function() {
   var tb = document.getElementById('indicatorToolbar');
-  if (tb && localStorage.getItem('dd_indicatorOpen') === 'true') tb.classList.remove('collapsed');
+  if (tb && localStorage.getItem('dd_indicatorOpen') === 'false') tb.classList.add('collapsed');
 })();
 
 async function addIndicator(id) {
