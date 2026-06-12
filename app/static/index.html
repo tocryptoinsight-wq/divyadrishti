@@ -56,6 +56,12 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
 .app-layout.hide-right .sidebar { flex:1; width:auto; max-width:480px; }
 .app-layout.hide-main.hide-right .sidebar { flex:1; width:auto; max-width:100%; }
 .app-layout.hide-left .sidebar { display:none; }
+.app-layout.hide-bottom .live-trading { display:none; }
+.app-layout.hide-bottom .chart-container { flex:1; }
+.app-layout.hide-all .sidebar { display:none; }
+.app-layout.hide-all .sidebar-right { display:none; }
+.app-layout.hide-all .live-trading { display:none; }
+.app-layout.hide-all .chart-container { flex:1; }
 /* overlay */
 .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:900; }
 .sidebar-overlay.active { display:block; }
@@ -647,7 +653,10 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
       <span style="font-size:10px;color:#666;" id="lastUpdate"></span>
       <span id="candleTimer" style="font-size:11px;color:#4ade80;font-family:'Consolas','Segoe UI',Arial,sans-serif;">--:--</span>
        <button id="refreshBtn" style="background:none;border:none;color:#6b7280;font-size:13px;cursor:pointer;padding:0;line-height:1;display:inline-block;">&#x27F3;</button>
-      <span class="tgl-btn" id="chartViewBtn" onclick="toggleChartView()" title="Expand chart" style="font-size:10px;padding:2px 5px;">&#x25F0;</span>
+       <span class="tgl-btn" id="chartViewBtn" onclick="toggleChartView()" title="Expand Left" style="font-size:10px;padding:2px 5px;">&#x25F0;</span>
+       <span class="tgl-btn" id="chartViewBottomBtn" onclick="toggleView('bottom')" title="Expand Bottom" style="font-size:10px;padding:2px 5px;">&#x25BD;</span>
+       <span class="tgl-btn" id="chartViewLBBtn" onclick="toggleView('lb')" title="Expand Left &amp; Bottom" style="font-size:10px;padding:2px 5px;">&#x25F0;&#x25BD;</span>
+       <span class="tgl-btn" id="chartViewFullBtn" onclick="toggleView('full')" title="Full View" style="font-size:10px;padding:2px 5px;">&#x25A6;</span>
       <span class="tgl-btn" id="candleToggleBtn" onclick="toggleCandles()" title="Toggle candles" style="font-size:10px;padding:2px 5px;">&#x1F4A1;</span>
       <span id="connStatus" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;" title="Checking connection..."></span>
     </div>
@@ -5887,6 +5896,29 @@ function toggleChartView() {
     if (lastChartData) scrollToLatest(lastChartData, layout.classList.contains('hide-left') ? 200 : 120);
   }, 300);
 }
+function toggleView(side) {
+  const layout = document.querySelector('.app-layout');
+  if (side === 'bottom') {
+    layout.classList.toggle('hide-bottom');
+  } else if (side === 'lb') {
+    layout.classList.toggle('hide-left');
+    layout.classList.toggle('hide-bottom');
+  } else if (side === 'full') {
+    var isFull = !layout.classList.contains('hide-all');
+    layout.classList.toggle('hide-all', isFull);
+    layout.classList.toggle('hide-left', isFull);
+    layout.classList.toggle('hide-right', isFull);
+    layout.classList.toggle('hide-bottom', isFull);
+  }
+  updateToggleButtons();
+  setTimeout(function() {
+    if (!chart) return;
+    var container = document.getElementById('chart');
+    if (container) chart.resize(container.clientWidth, container.clientHeight);
+    var expanded = layout.classList.contains('hide-left') || layout.classList.contains('hide-all');
+    if (lastChartData) scrollToLatest(lastChartData, expanded ? 200 : 120);
+  }, 300);
+}
 function toggleCandles() {
   _candleHidden = !_candleHidden;
   localStorage.setItem('candleHidden', _candleHidden);
@@ -5921,7 +5953,7 @@ function applyResponsive() {
   } else {
     layout.classList.remove('hide-main', 'hide-right', 'show-main', 'show-right');
   }
-  if (w <= 1024) layout.classList.remove('hide-left');
+  if (w <= 1024) layout.classList.remove('hide-left', 'hide-bottom', 'hide-all');
   updateToggleButtons();
 }
 function togglePanel(panel) {
@@ -5954,6 +5986,9 @@ function updateToggleButtons() {
   mMob?.classList.toggle('active', mActive);
   rMob?.classList.toggle('active', rActive);
   cvBtn?.classList.toggle('active', w > 1024 && layout.classList.contains('hide-left'));
+  document.getElementById('chartViewBottomBtn')?.classList.toggle('active', w > 1024 && layout.classList.contains('hide-bottom'));
+  document.getElementById('chartViewLBBtn')?.classList.toggle('active', w > 1024 && layout.classList.contains('hide-left') && layout.classList.contains('hide-bottom'));
+  document.getElementById('chartViewFullBtn')?.classList.toggle('active', w > 1024 && layout.classList.contains('hide-all'));
 }
 applyResponsive();
 window.addEventListener('resize', applyResponsive);
