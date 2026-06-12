@@ -658,7 +658,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
     <div id="chartFallback">Chart library not loaded. Check Internet connection for CDN access.</div>
     <canvas id="chartCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;"></canvas>
     <div id="chartAlert" style="position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;"></div>
-    <div id="indicatorToolbar">
+    <div id="indicatorToolbar" class="collapsed">
       <button id="indicatorToggle" onclick="toggleIndicatorToolbar()" title="Indicators" style="border-radius:5px">Indicators</button>
       <div id="indicatorContent">
         <div id="indicatorList" style="padding:2px 0;"></div>
@@ -2814,7 +2814,7 @@ function toggleIndicatorToolbar() {
 // Restore indicator toolbar state
 (function() {
   var tb = document.getElementById('indicatorToolbar');
-  if (tb && localStorage.getItem('dd_indicatorOpen') === 'false') tb.classList.add('collapsed');
+  if (tb && localStorage.getItem('dd_indicatorOpen') === 'true') tb.classList.remove('collapsed');
 })();
 
 async function addIndicator(id) {
