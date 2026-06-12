@@ -1723,17 +1723,20 @@ function _redrawCanvas() {
     var ly = candleSeries.priceToCoordinate(m.low);
     if (hy == null || ly == null) return;
     hy = Math.round(hy); ly = Math.round(ly);
+    var lx = chart.timeScale().timeToCoordinate(m.time);
+    if (lx == null) return;
+    lx = Math.round(lx);
     ctx.strokeStyle = '#eab308';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 3]);
-    ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(w, hy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(w, ly); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lx, hy); ctx.lineTo(w, hy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(w, ly); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = '#eab308';
     ctx.font = '10px "Segoe UI", Arial, sans-serif';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-    ctx.fillText('High: ' + m.high.toFixed(2), 4, hy - 2);
-    ctx.fillText('Low: ' + m.low.toFixed(2), 4, ly + 10);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText('High: ' + m.high.toFixed(2), w - 20, hy - 2);
+    ctx.fillText('Low: ' + m.low.toFixed(2), w - 20, ly + 10);
     // Delete button
     var dY = Math.round((hy + ly) / 2);
     ctx.fillStyle = 'rgba(239,68,68,0.5)';
