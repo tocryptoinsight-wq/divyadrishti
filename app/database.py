@@ -31,7 +31,7 @@ if _IS_PG:
         return _thread_local.conn
 
     def _fix(sql):
-        return sql.replace("?", "%s")
+        return sql.replace("?", "%s").replace("datetime('now')", "NOW()")
 
     def _init_db():
         conn = _get_conn()
