@@ -714,6 +714,9 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
         <button class="chart-tool" data-tool="fib" title="Fibonacci Retracement">Fib</button>
         <button class="chart-tool" data-tool="measure" title="Measure Tool">📏</button>
         <button class="chart-tool" data-tool="level" title="Level Marker">✏️</button>
+        <button class="chart-tool" data-tool="circle" title="Circle">⬤</button>
+        <button class="chart-tool" data-tool="rectangle" title="Rectangle">▭</button>
+        <button class="chart-tool" data-tool="channel" title="Channel">≡</button>
         <div class="toolbar-sep"></div>
         <button id="toolTransp" title="Transparency">◐</button>
         <div class="toolbar-sep"></div>
@@ -951,6 +954,16 @@ let _measureTools = [];
 let _measureStart = null;
 let _measureCursor = null;
 let _levelMarkers = [];
+let _circleTools = [];
+let _circleStart = null;
+let _circleCursor = null;
+let _rectTools = [];
+let _rectStart = null;
+let _rectCursor = null;
+let _channelTools = [];
+let _channelStart = null;
+let _channelCursor = null;
+let _channelStage = 0;
 let initialLoad = true;
 let pendingScroll = false;
 let dataLoaded = false;
@@ -1101,13 +1114,22 @@ function initChart() {
         _fibCursor = { time: chart.timeScale().coordinateToTime(param.point.x), price: candleSeries.coordinateToPrice(param.point.y) };
       } else if (param.point && _activeTool === 'measure' && _measureStart) {
         _measureCursor = { logical: chart.timeScale().coordinateToLogical(param.point.x), time: chart.timeScale().coordinateToTime(param.point.x), price: candleSeries.coordinateToPrice(param.point.y) };
+      } else if (param.point && _activeTool === 'circle' && _circleStart) {
+        _circleCursor = { logical: chart.timeScale().coordinateToLogical(param.point.x), time: chart.timeScale().coordinateToTime(param.point.x), price: candleSeries.coordinateToPrice(param.point.y) };
+      } else if (param.point && _activeTool === 'rectangle' && _rectStart) {
+        _rectCursor = { logical: chart.timeScale().coordinateToLogical(param.point.x), time: chart.timeScale().coordinateToTime(param.point.x), price: candleSeries.coordinateToPrice(param.point.y) };
+      } else if (param.point && _activeTool === 'channel' && _channelStart) {
+        _channelCursor = { logical: chart.timeScale().coordinateToLogical(param.point.x), time: chart.timeScale().coordinateToTime(param.point.x), price: candleSeries.coordinateToPrice(param.point.y) };
       } else {
         _trendCursor = null;
         _fibCursor = null;
         _measureCursor = null;
+        _circleCursor = null;
+        _rectCursor = null;
+        _channelCursor = null;
       }
       _redrawCanvas();
-      if (!param.point || _activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0)) {
+      if (!param.point || _activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0 && _circleTools.length === 0 && _rectTools.length === 0 && _channelTools.length === 0)) {
         document.querySelector('.chart-container').style.cursor = '';
         return;
       }
@@ -1115,9 +1137,9 @@ function initChart() {
       if (target) {
         console.log('crosshair target:', target.line, target.fib ? 'fib' : target.drawing ? 'drawing' : 'other');
         document.querySelector('.chart-container').style.cursor =
-          target.line === 'delete' || target.line === 'trend-del' || target.line === 'hline-del' || target.line === 'fib-del' || target.line === 'measure-del' ? 'pointer' :
+          target.line === 'delete' || target.line === 'trend-del' || target.line === 'hline-del' || target.line === 'fib-del' || target.line === 'measure-del' || target.line === 'circle-del' || target.line === 'rect-del' || target.line === 'channel-del' ? 'pointer' :
           target.line === 'width' ? 'ew-resize' :
-          target.line === 'move' || target.line === 'fib-move' || target.line === 'trend-end1' || target.line === 'trend-end2' || target.line === 'fib-end1' || target.line === 'fib-end2' || target.line === 'measure-end1' || target.line === 'measure-end2' ? 'move' :
+          target.line === 'move' || target.line === 'fib-move' || target.line === 'trend-end1' || target.line === 'trend-end2' || target.line === 'fib-end1' || target.line === 'fib-end2' || target.line === 'measure-end1' || target.line === 'measure-end2' || target.line === 'circle-end1' || target.line === 'circle-end2' || target.line === 'rect-end1' || target.line === 'rect-end2' || target.line === 'channel-end1' || target.line === 'channel-end2' || target.line === 'channel-end3' ? 'move' :
           target.line === 'fib-high' || target.line === 'fib-low' ? 'row-resize' : 'row-resize';
       } else {
         document.querySelector('.chart-container').style.cursor = '';
@@ -1185,6 +1207,15 @@ function _saveDrawings() {
       }),
       levels: _levelMarkers.map(function(m) {
         return { time: m.time, high: m.high, low: m.low };
+      }),
+      circles: _circleTools.map(function(c) {
+        return { x1: c.x1, y1: c.y1, x2: c.x2, y2: c.y2, time1: c.time1, time2: c.time2 };
+      }),
+      rects: _rectTools.map(function(r) {
+        return { x1: r.x1, y1: r.y1, x2: r.x2, y2: r.y2, time1: r.time1, time2: r.time2 };
+      }),
+      channels: _channelTools.map(function(ch) {
+        return { x1: ch.x1, y1: ch.y1, x2: ch.x2, y2: ch.y2, x3: ch.x3, y3: ch.y3, time1: ch.time1, time2: ch.time2, time3: ch.time3 };
       })
     };
     var all = JSON.parse(localStorage.getItem('dd_drawings') || '{}');
@@ -1205,7 +1236,7 @@ function _loadDrawings() {
     fetch('/api/drawings/' + encodeURIComponent(currentSymbol), { headers: getHeaders() })
       .then(function(r) { if (r.ok) return r.json(); throw new Error(); })
       .then(function(d) {
-        if (d && (d.boxes || d.trends || d.hlines || d.fibs || d.measures)) {
+        if (d && (d.boxes || d.trends || d.hlines || d.fibs || d.measures || d.levels || d.circles || d.rects || d.channels)) {
           _clearDrawingArrays();
           _applyDrawings(d);
           var all2 = JSON.parse(localStorage.getItem('dd_drawings') || '{}');
@@ -1255,6 +1286,15 @@ function _applyDrawings(saved) {
       _levelMarkers = (saved.levels || []).map(function(m) {
         return { time: m.time, high: m.high, low: m.low };
       });
+      _circleTools = (saved.circles || []).map(function(c) {
+        return { x1: c.x1, y1: c.y1, x2: c.x2, y2: c.y2, time1: c.time1, time2: c.time2 };
+      });
+      _rectTools = (saved.rects || []).map(function(r) {
+        return { x1: r.x1, y1: r.y1, x2: r.x2, y2: r.y2, time1: r.time1, time2: r.time2 };
+      });
+      _channelTools = (saved.channels || []).map(function(ch) {
+        return { x1: ch.x1, y1: ch.y1, x2: ch.x2, y2: ch.y2, x3: ch.x3, y3: ch.y3, time1: ch.time1, time2: ch.time2, time3: ch.time3 };
+      });
     }
     _redrawCanvas();
   } catch(e) {}
@@ -1275,6 +1315,16 @@ function _clearDrawingArrays() {
   _measureStart = null;
   _measureCursor = null;
   _levelMarkers = [];
+  _circleTools = [];
+  _circleStart = null;
+  _circleCursor = null;
+  _rectTools = [];
+  _rectStart = null;
+  _rectCursor = null;
+  _channelTools = [];
+  _channelStart = null;
+  _channelCursor = null;
+  _channelStage = 0;
   _dragState = null;
   if (candleSeries) candleSeries.setMarkers([]);
 }
@@ -1701,6 +1751,199 @@ function _redrawCanvas() {
     }
   }
 
+  // Circle tools
+  _circleTools.forEach(function(c) {
+    var cx1 = chart.timeScale().logicalToCoordinate(c.x1);
+    var cx2 = chart.timeScale().logicalToCoordinate(c.x2);
+    var cy1 = candleSeries.priceToCoordinate(c.y1);
+    var cy2 = candleSeries.priceToCoordinate(c.y2);
+    if (cx1 == null || cx2 == null || cy1 == null || cy2 == null) return;
+    cx1 = Math.round(cx1); cx2 = Math.round(cx2);
+    cy1 = Math.round(cy1); cy2 = Math.round(cy2);
+    var boxX = Math.min(cx1, cx2);
+    var boxW = Math.abs(cx2 - cx1);
+    var boxY = Math.min(cy1, cy2);
+    var boxH = Math.abs(cy2 - cy1);
+    var centerX = boxX + boxW / 2;
+    var centerY = boxY + boxH / 2;
+    var rx = Math.max(1, boxW / 2);
+    var ry = Math.max(1, boxH / 2);
+    // Fill
+    ctx.beginPath();
+    ctx.ellipse(centerX, centerY, rx, ry, 0, 0, 2 * Math.PI);
+    ctx.fillStyle = 'rgba(234,179,8,0.08)';
+    ctx.fill();
+    // Stroke
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+    ctx.stroke();
+    // Center crosshair
+    ctx.beginPath();
+    ctx.moveTo(centerX - 4, centerY); ctx.lineTo(centerX + 4, centerY);
+    ctx.moveTo(centerX, centerY - 4); ctx.lineTo(centerX, centerY + 4);
+    ctx.strokeStyle = 'rgba(234,179,8,0.5)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+    // Endpoint handles
+    ctx.beginPath(); ctx.arc(cx1, cy1, 3, 0, 2 * Math.PI); ctx.fillStyle = '#eab308'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx2, cy2, 3, 0, 2 * Math.PI); ctx.fill();
+    // Delete at rightmost edge
+    var delX = Math.max(cx1, cx2);
+    var delY = Math.min(cy1, cy2);
+    ctx.fillStyle = 'rgba(239,68,68,0.5)';
+    ctx.beginPath(); ctx.arc(delX, delY, 5, 0, 2 * Math.PI); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✕', delX, delY);
+  });
+
+  // Circle preview
+  if (_circleStart && _circleCursor && _circleCursor.price != null && _circleCursor.logical != null) {
+    var pcx1 = chart.timeScale().logicalToCoordinate(_circleStart.lx);
+    var pcy1 = candleSeries.priceToCoordinate(_circleStart.price);
+    var pcx2 = chart.timeScale().logicalToCoordinate(_circleCursor.logical);
+    var pcy2 = candleSeries.priceToCoordinate(_circleCursor.price);
+    if (pcx1 != null && pcy1 != null && pcx2 != null && pcy2 != null) {
+      pcx1 = Math.round(pcx1); pcx2 = Math.round(pcx2);
+      pcy1 = Math.round(pcy1); pcy2 = Math.round(pcy2);
+      var pbx = Math.min(pcx1, pcx2); var pbw = Math.abs(pcx2 - pcx1);
+      var pby = Math.min(pcy1, pcy2); var pbh = Math.abs(pcy2 - pcy1);
+      ctx.beginPath();
+      ctx.ellipse(pbx + pbw/2, pby + pbh/2, Math.max(1, pbw/2), Math.max(1, pbh/2), 0, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgba(234,179,8,0.06)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(234,179,8,0.3)';
+      ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(pcx1, pcy1, 4, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgba(234,179,8,0.4)'; ctx.fill();
+    }
+  }
+
+  // Rectangle tools
+  _rectTools.forEach(function(r) {
+    var rx1 = chart.timeScale().logicalToCoordinate(r.x1);
+    var rx2 = chart.timeScale().logicalToCoordinate(r.x2);
+    var ry1 = candleSeries.priceToCoordinate(r.y1);
+    var ry2 = candleSeries.priceToCoordinate(r.y2);
+    if (rx1 == null || rx2 == null || ry1 == null || ry2 == null) return;
+    rx1 = Math.round(rx1); rx2 = Math.round(rx2);
+    ry1 = Math.round(ry1); ry2 = Math.round(ry2);
+    var boxX = Math.min(rx1, rx2);
+    var boxW = Math.abs(rx2 - rx1);
+    var boxY = Math.min(ry1, ry2);
+    var boxH = Math.abs(ry2 - ry1);
+    // Fill
+    ctx.fillStyle = 'rgba(59,130,246,0.08)';
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    // Stroke
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+    // Endpoint handles
+    ctx.beginPath(); ctx.arc(rx1, ry1, 3, 0, 2*Math.PI); ctx.fillStyle = '#3b82f6'; ctx.fill();
+    ctx.beginPath(); ctx.arc(rx2, ry2, 3, 0, 2*Math.PI); ctx.fill();
+    // Delete at top-right corner
+    var delX = Math.max(rx1, rx2);
+    var delY = Math.min(ry1, ry2);
+    ctx.fillStyle = 'rgba(239,68,68,0.5)';
+    ctx.beginPath(); ctx.arc(delX, delY, 5, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✕', delX, delY);
+  });
+
+  // Rectangle preview
+  if (_rectStart && _rectCursor && _rectCursor.price != null && _rectCursor.logical != null) {
+    var prx1 = chart.timeScale().logicalToCoordinate(_rectStart.lx);
+    var pry1 = candleSeries.priceToCoordinate(_rectStart.price);
+    var prx2 = chart.timeScale().logicalToCoordinate(_rectCursor.logical);
+    var pry2 = candleSeries.priceToCoordinate(_rectCursor.price);
+    if (prx1 != null && pry1 != null && prx2 != null && pry2 != null) {
+      prx1 = Math.round(prx1); prx2 = Math.round(prx2);
+      pry1 = Math.round(pry1); pry2 = Math.round(pry2);
+      var pboxX = Math.min(prx1, prx2); var pboxW = Math.abs(prx2 - prx1);
+      var pboxY = Math.min(pry1, pry2); var pboxH = Math.abs(pry2 - pry1);
+      ctx.fillStyle = 'rgba(59,130,246,0.06)';
+      ctx.fillRect(pboxX, pboxY, pboxW, pboxH);
+      ctx.strokeStyle = 'rgba(59,130,246,0.3)';
+      ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.strokeRect(pboxX, pboxY, pboxW, pboxH); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(prx1, pry1, 4, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgba(59,130,246,0.4)'; ctx.fill();
+    }
+  }
+
+  // Channel tools
+  _channelTools.forEach(function(ch) {
+    var cx1 = chart.timeScale().logicalToCoordinate(ch.x1);
+    var cx2 = chart.timeScale().logicalToCoordinate(ch.x2);
+    var cx3 = chart.timeScale().logicalToCoordinate(ch.x3);
+    var cy1 = candleSeries.priceToCoordinate(ch.y1);
+    var cy2 = candleSeries.priceToCoordinate(ch.y2);
+    var cy3 = candleSeries.priceToCoordinate(ch.y3);
+    if (cx1 == null || cx2 == null || cx3 == null || cy1 == null || cy2 == null || cy3 == null) return;
+    cx1 = Math.round(cx1); cx2 = Math.round(cx2); cx3 = Math.round(cx3);
+    cy1 = Math.round(cy1); cy2 = Math.round(cy2); cy3 = Math.round(cy3);
+    // Compute parallel line offset
+    var dx = cx2 - cx1;
+    var dy = cy2 - cy1;
+    var len = Math.sqrt(dx*dx + dy*dy) || 1;
+    // Project point 3 onto the line direction to get perpendicular offset
+    var t = ((cx3 - cx1)*dx + (cy3 - cy1)*dy) / (len*len);
+    var perpX = cx3 - (cx1 + t*dx);
+    var perpY = cy3 - (cy1 + t*dy);
+    // First line
+    ctx.beginPath(); ctx.moveTo(cx1, cy1); ctx.lineTo(cx2, cy2);
+    ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1; ctx.stroke();
+    // Second (parallel) line
+    ctx.beginPath(); ctx.moveTo(cx1 + perpX, cy1 + perpY); ctx.lineTo(cx2 + perpX, cy2 + perpY);
+    ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+    // Fill channel
+    var polyX = [cx1, cx2, cx2 + perpX, cx1 + perpX];
+    var polyY = [cy1, cy2, cy2 + perpY, cy1 + perpY];
+    ctx.beginPath(); ctx.moveTo(polyX[0], polyY[0]);
+    for (var pi = 1; pi < 4; pi++) ctx.lineTo(polyX[pi], polyY[pi]);
+    ctx.closePath(); ctx.fillStyle = 'rgba(34,197,94,0.06)'; ctx.fill();
+    // Endpoint handles on all 3 points
+    ctx.beginPath(); ctx.arc(cx1, cy1, 3, 0, 2*Math.PI); ctx.fillStyle = '#22c55e'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx2, cy2, 3, 0, 2*Math.PI); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx3, cy3, 3, 0, 2*Math.PI); ctx.fillStyle = '#22c55e'; ctx.fill();
+    // Delete at midpoint of first line
+    var delX = (cx1 + cx2) / 2; var delY = (cy1 + cy2) / 2;
+    ctx.fillStyle = 'rgba(239,68,68,0.5)';
+    ctx.beginPath(); ctx.arc(delX, delY, 5, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✕', delX, delY);
+  });
+
+  // Channel preview
+  if (_channelStart && _channelCursor && _channelCursor.price != null && _channelCursor.logical != null) {
+    var pcx1 = chart.timeScale().logicalToCoordinate(_channelStart.lx);
+    var pcy1 = candleSeries.priceToCoordinate(_channelStart.price);
+    var pcx2 = chart.timeScale().logicalToCoordinate(_channelCursor.logical);
+    var pcy2 = candleSeries.priceToCoordinate(_channelCursor.price);
+    if (pcx1 != null && pcy1 != null && pcx2 != null && pcy2 != null) {
+      pcx1 = Math.round(pcx1); pcx2 = Math.round(pcx2);
+      pcy1 = Math.round(pcy1); pcy2 = Math.round(pcy2);
+      // Preview line
+      ctx.beginPath(); ctx.moveTo(pcx1, pcy1); ctx.lineTo(pcx2, pcy2);
+      ctx.strokeStyle = 'rgba(34,197,94,0.35)';
+      ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(pcx1, pcy1, 4, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgba(34,197,94,0.4)'; ctx.fill();
+      var label = _channelStage === 1 ? 'Click line end point' : 'Click parallel point';
+      ctx.fillStyle = 'rgba(34,197,94,0.6)';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+      ctx.fillText(label, pcx2 + 6, pcy2 - 2);
+    }
+  }
+
   // Hline delete buttons
   _chartPriceLines.forEach(function(h) {
     var hy = candleSeries.priceToCoordinate(h.price);
@@ -1876,6 +2119,13 @@ function _deactivateTool() {
   _fibCursor = null;
   _measureStart = null;
   _measureCursor = null;
+  _circleStart = null;
+  _circleCursor = null;
+  _rectStart = null;
+  _rectCursor = null;
+  _channelStart = null;
+  _channelCursor = null;
+  _channelStage = 0;
   document.querySelectorAll('.chart-tool').forEach(function(b) { b.classList.remove('active'); });
   document.querySelector('.chart-container').classList.remove('tool-active');
 }
@@ -2005,6 +2255,63 @@ function _handleChartClick(param) {
       }
     }
     _deactivateTool();
+    return;
+  }
+  if (_activeTool === 'circle') {
+    if (!_circleStart) {
+      if (!time) return;
+      _circleStart = { time: time, price: price, lx: chart.timeScale().coordinateToLogical(param.point.x) };
+    } else {
+      var lx2 = chart.timeScale().coordinateToLogical(param.point.x);
+      if (lx2 == null) return;
+      _circleTools.push({ x1: _circleStart.lx, y1: _circleStart.price, x2: lx2, y2: price, time1: _circleStart.time, time2: time });
+      _circleStart = null;
+      _circleCursor = null;
+      _saveDrawings();
+      _redrawCanvas();
+      _deactivateTool();
+    }
+    return;
+  }
+  if (_activeTool === 'rectangle') {
+    if (!_rectStart) {
+      if (!time) return;
+      _rectStart = { time: time, price: price, lx: chart.timeScale().coordinateToLogical(param.point.x) };
+    } else {
+      var lx2 = chart.timeScale().coordinateToLogical(param.point.x);
+      if (lx2 == null) return;
+      _rectTools.push({ x1: _rectStart.lx, y1: _rectStart.price, x2: lx2, y2: price, time1: _rectStart.time, time2: time });
+      _rectStart = null;
+      _rectCursor = null;
+      _saveDrawings();
+      _redrawCanvas();
+      _deactivateTool();
+    }
+    return;
+  }
+  if (_activeTool === 'channel') {
+    if (!_channelStart) {
+      if (!time) return;
+      _channelStart = { time: time, price: price, lx: chart.timeScale().coordinateToLogical(param.point.x) };
+      _channelStage = 1;
+    } else if (_channelStage === 1) {
+      var lx2 = chart.timeScale().coordinateToLogical(param.point.x);
+      if (lx2 == null) return;
+      _channelStart.lx2 = lx2;
+      _channelStart.time2 = time;
+      _channelStart.price2 = price;
+      _channelStage = 2;
+    } else {
+      var lx3 = chart.timeScale().coordinateToLogical(param.point.x);
+      if (lx3 == null) return;
+      _channelTools.push({ x1: _channelStart.lx, y1: _channelStart.price, x2: _channelStart.lx2, y2: _channelStart.price2, x3: lx3, y3: price, time1: _channelStart.time, time2: _channelStart.time2, time3: time });
+      _channelStart = null;
+      _channelCursor = null;
+      _channelStage = 0;
+      _saveDrawings();
+      _redrawCanvas();
+      _deactivateTool();
+    }
     return;
   }
   if (!time) return;
@@ -2222,6 +2529,61 @@ function _getDragTarget(x, y) {
     if (Math.abs(y - ly) <= 6)
       return { line: 'level-low', lIdx: i };
   }
+  // Circle tools
+  for (var i = _circleTools.length - 1; i >= 0; i--) {
+    var c = _circleTools[i];
+    var ccx1 = chart.timeScale().logicalToCoordinate(c.x1);
+    var ccx2 = chart.timeScale().logicalToCoordinate(c.x2);
+    var ccy1 = candleSeries.priceToCoordinate(c.y1);
+    var ccy2 = candleSeries.priceToCoordinate(c.y2);
+    if (ccx1 == null || ccx2 == null || ccy1 == null || ccy2 == null) continue;
+    if (Math.abs(x - ccx1) <= 6 && Math.abs(y - ccy1) <= 6)
+      return { line: 'circle-end1', cIdx: i };
+    if (Math.abs(x - ccx2) <= 6 && Math.abs(y - ccy2) <= 6)
+      return { line: 'circle-end2', cIdx: i };
+    var cDelX = Math.max(ccx1, ccx2);
+    var cDelY = Math.min(ccy1, ccy2);
+    if (Math.abs(x - cDelX) <= 10 && Math.abs(y - cDelY) <= 10)
+      return { line: 'circle-del', cIdx: i };
+  }
+  // Rectangle tools
+  for (var i = _rectTools.length - 1; i >= 0; i--) {
+    var r = _rectTools[i];
+    var rrx1 = chart.timeScale().logicalToCoordinate(r.x1);
+    var rrx2 = chart.timeScale().logicalToCoordinate(r.x2);
+    var rry1 = candleSeries.priceToCoordinate(r.y1);
+    var rry2 = candleSeries.priceToCoordinate(r.y2);
+    if (rrx1 == null || rrx2 == null || rry1 == null || rry2 == null) continue;
+    if (Math.abs(x - rrx1) <= 6 && Math.abs(y - rry1) <= 6)
+      return { line: 'rect-end1', rIdx: i };
+    if (Math.abs(x - rrx2) <= 6 && Math.abs(y - rry2) <= 6)
+      return { line: 'rect-end2', rIdx: i };
+    var rDelX = Math.max(rrx1, rrx2);
+    var rDelY = Math.min(rry1, rry2);
+    if (Math.abs(x - rDelX) <= 10 && Math.abs(y - rDelY) <= 10)
+      return { line: 'rect-del', rIdx: i };
+  }
+  // Channel tools
+  for (var i = _channelTools.length - 1; i >= 0; i--) {
+    var ch = _channelTools[i];
+    var chx1 = chart.timeScale().logicalToCoordinate(ch.x1);
+    var chx2 = chart.timeScale().logicalToCoordinate(ch.x2);
+    var chx3 = chart.timeScale().logicalToCoordinate(ch.x3);
+    var chy1 = candleSeries.priceToCoordinate(ch.y1);
+    var chy2 = candleSeries.priceToCoordinate(ch.y2);
+    var chy3 = candleSeries.priceToCoordinate(ch.y3);
+    if (chx1 == null || chx2 == null || chx3 == null || chy1 == null || chy2 == null || chy3 == null) continue;
+    if (Math.abs(x - chx1) <= 6 && Math.abs(y - chy1) <= 6)
+      return { line: 'channel-end1', chIdx: i };
+    if (Math.abs(x - chx2) <= 6 && Math.abs(y - chy2) <= 6)
+      return { line: 'channel-end2', chIdx: i };
+    if (Math.abs(x - chx3) <= 6 && Math.abs(y - chy3) <= 6)
+      return { line: 'channel-end3', chIdx: i };
+    var chDelX = (chx1 + chx2) / 2;
+    var chDelY = (chy1 + chy2) / 2;
+    if (Math.abs(x - chDelX) <= 10 && Math.abs(y - chDelY) <= 10)
+      return { line: 'channel-del', chIdx: i };
+  }
   return null;
 }
 
@@ -2239,7 +2601,7 @@ function _chartTouchXY(e) {
 
 // Capture-phase mousedown for drag start (fires before chart internal handler)
 document.querySelector('.chart-container').addEventListener('mousedown', function(e) {
-  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0)) return;
+  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0 && _circleTools.length === 0 && _rectTools.length === 0 && _channelTools.length === 0)) return;
   var xy = _chartXY(e);
   var target = _getDragTarget(xy.x, xy.y);
   if (target) {
@@ -2294,6 +2656,30 @@ document.querySelector('.chart-container').addEventListener('mousedown', functio
       e.stopPropagation();
       return;
     }
+    if (target.line === 'circle-del') {
+      _circleTools.splice(target.cIdx, 1);
+      _saveDrawings();
+      _redrawCanvas();
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if (target.line === 'rect-del') {
+      _rectTools.splice(target.rIdx, 1);
+      _saveDrawings();
+      _redrawCanvas();
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if (target.line === 'channel-del') {
+      _channelTools.splice(target.chIdx, 1);
+      _saveDrawings();
+      _redrawCanvas();
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     _dragState = target;
     if (_dragState.line === 'move') {
       _dragState.startX = xy.x;
@@ -2319,7 +2705,7 @@ document.querySelector('.chart-container').addEventListener('mousedown', functio
 
 // Touchstart handler (mirrors mousedown)
 document.querySelector('.chart-container').addEventListener('touchstart', function(e) {
-  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0)) return;
+  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0 && _circleTools.length === 0 && _rectTools.length === 0 && _channelTools.length === 0)) return;
   var xy = _chartTouchXY(e);
   var target = _getDragTarget(xy.x, xy.y);
   if (target) {
@@ -2363,6 +2749,27 @@ document.querySelector('.chart-container').addEventListener('touchstart', functi
       }
       if (target.line === 'level-del') {
         _levelMarkers.splice(target.lIdx, 1);
+        _saveDrawings();
+        _redrawCanvas();
+        e.preventDefault();
+        return;
+      }
+      if (target.line === 'circle-del') {
+        _circleTools.splice(target.cIdx, 1);
+        _saveDrawings();
+        _redrawCanvas();
+        e.preventDefault();
+        return;
+      }
+      if (target.line === 'rect-del') {
+        _rectTools.splice(target.rIdx, 1);
+        _saveDrawings();
+        _redrawCanvas();
+        e.preventDefault();
+        return;
+      }
+      if (target.line === 'channel-del') {
+        _channelTools.splice(target.chIdx, 1);
         _saveDrawings();
         _redrawCanvas();
         e.preventDefault();
@@ -2495,6 +2902,34 @@ function _dragMoveHandler(xy) {
     var newPrice = candleSeries.coordinateToPrice(xy.y);
     if (newPrice != null) {
       _levelMarkers[_dragState.lIdx].low = newPrice;
+      _redrawCanvas();
+    }
+  } else if (_dragState.line === 'circle-end1' || _dragState.line === 'circle-end2') {
+    var newLogical = chart.timeScale().coordinateToLogical(xy.x);
+    var newPrice = candleSeries.coordinateToPrice(xy.y);
+    if (newLogical != null && newPrice != null) {
+      var c = _circleTools[_dragState.cIdx];
+      if (_dragState.line === 'circle-end1') { c.x1 = newLogical; c.y1 = newPrice; }
+      else { c.x2 = newLogical; c.y2 = newPrice; }
+      _redrawCanvas();
+    }
+  } else if (_dragState.line === 'rect-end1' || _dragState.line === 'rect-end2') {
+    var newLogical = chart.timeScale().coordinateToLogical(xy.x);
+    var newPrice = candleSeries.coordinateToPrice(xy.y);
+    if (newLogical != null && newPrice != null) {
+      var r = _rectTools[_dragState.rIdx];
+      if (_dragState.line === 'rect-end1') { r.x1 = newLogical; r.y1 = newPrice; }
+      else { r.x2 = newLogical; r.y2 = newPrice; }
+      _redrawCanvas();
+    }
+  } else if (_dragState.line === 'channel-end1' || _dragState.line === 'channel-end2' || _dragState.line === 'channel-end3') {
+    var newLogical = chart.timeScale().coordinateToLogical(xy.x);
+    var newPrice = candleSeries.coordinateToPrice(xy.y);
+    if (newLogical != null && newPrice != null) {
+      var ch = _channelTools[_dragState.chIdx];
+      if (_dragState.line === 'channel-end1') { ch.x1 = newLogical; ch.y1 = newPrice; }
+      else if (_dragState.line === 'channel-end2') { ch.x2 = newLogical; ch.y2 = newPrice; }
+      else { ch.x3 = newLogical; ch.y3 = newPrice; }
       _redrawCanvas();
     }
   } else {
