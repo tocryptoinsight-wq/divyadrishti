@@ -3228,8 +3228,11 @@ function _renderIndicatorDropdown() {
   }
   var _noPreviewIds = { ema_ribbon:1, supertrend:1, triple_ema:1 };
   list.innerHTML = _indicatorMetas.map(function(m) {
-    var linePreview = '<span style="width:10px;height:2px;border-radius:0px;background:#555;flex-shrink:0;"></span>';
+    var linePreview = '';
     if (!_noPreviewIds[m.id] && m.lines && m.lines.length > 0) {
+      if (m.lines.length === 1) {
+        linePreview = '<span style="width:12px;height:2px;border-radius:0px;background:' + m.lines[0].color + ';flex-shrink:0;"></span>';
+      } else {
       if (m.lines.length === 1) {
         linePreview = '<span style="width:12px;height:2px;border-radius:0px;background:' + m.lines[0].color + ';flex-shrink:0;"></span>';
       } else {
