@@ -713,6 +713,7 @@ body { background: var(--bg-primary); color: var(--text-primary); font-family: '
         <button class="chart-tool" data-tool="hline" title="Horizontal Line">━</button>
         <button class="chart-tool" data-tool="fib" title="Fibonacci Retracement">Fib</button>
         <button class="chart-tool" data-tool="measure" title="Measure Tool">📏</button>
+        <button class="chart-tool" data-tool="level" title="Level Marker">✏️</button>
         <div class="toolbar-sep"></div>
         <button id="toolTransp" title="Transparency">◐</button>
         <div class="toolbar-sep"></div>
@@ -949,6 +950,7 @@ let _fibCursor = null;
 let _measureTools = [];
 let _measureStart = null;
 let _measureCursor = null;
+let _levelMarkers = [];
 let initialLoad = true;
 let pendingScroll = false;
 let dataLoaded = false;
@@ -1180,6 +1182,9 @@ function _saveDrawings() {
       }),
       measures: _measureTools.map(function(m) {
         return { x1: m.x1, y1: m.y1, x2: m.x2, y2: m.y2, time1: m.time1, time2: m.time2 };
+      }),
+      levels: _levelMarkers.map(function(m) {
+        return { time: m.time, high: m.high, low: m.low };
       })
     };
     var all = JSON.parse(localStorage.getItem('dd_drawings') || '{}');
@@ -1247,6 +1252,9 @@ function _applyDrawings(saved) {
       _measureTools = (saved.measures || []).map(function(m) {
         return { x1: m.x1, y1: m.y1, x2: m.x2, y2: m.y2, time1: m.time1, time2: m.time2 };
       });
+      _levelMarkers = (saved.levels || []).map(function(m) {
+        return { time: m.time, high: m.high, low: m.low };
+      });
     }
     _redrawCanvas();
   } catch(e) {}
@@ -1266,6 +1274,7 @@ function _clearDrawingArrays() {
   _measureTools = [];
   _measureStart = null;
   _measureCursor = null;
+  _levelMarkers = [];
   _dragState = null;
   if (candleSeries) candleSeries.setMarkers([]);
 }
@@ -1708,6 +1717,35 @@ function _redrawCanvas() {
     ctx.fillText('✕', w - 14, hy);
   });
 
+  // Level markers
+  _levelMarkers.forEach(function(m, mi) {
+    var hy = candleSeries.priceToCoordinate(m.high);
+    var ly = candleSeries.priceToCoordinate(m.low);
+    if (hy == null || ly == null) return;
+    hy = Math.round(hy); ly = Math.round(ly);
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(w, hy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(w, ly); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#eab308';
+    ctx.font = '10px "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('High: ' + m.high.toFixed(2), 4, hy - 2);
+    ctx.fillText('Low: ' + m.low.toFixed(2), 4, ly + 10);
+    // Delete button
+    var dY = Math.round((hy + ly) / 2);
+    ctx.fillStyle = 'rgba(239,68,68,0.5)';
+    ctx.beginPath();
+    ctx.arc(w - 14, dY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✕', w - 14, dY);
+  });
+
   // Position drawings (Long/Short toolbar tools)
   var _pBw = bw;
   _positionDrawings.forEach(function(p) {
@@ -1852,7 +1890,7 @@ function _handleChartClick(param) {
   hideCandleInfoPanel();
   if (!param.point || !chart || !candleSeries) return;
   // Candle info mode (no drawing tool active)
-  if (_candleInfoMode && !_activeTool) {
+  if (_candleInfoMode && (!_activeTool || _activeTool === 'level')) {
     // Flash toggle button green to confirm click detected
     var fbBtn = document.getElementById('candleInfoToggle');
     if (fbBtn) { fbBtn.style.outline = '2px solid #22c55e'; setTimeout(function(){ fbBtn.style.outline = ''; }, 300); }
@@ -1941,6 +1979,29 @@ function _handleChartClick(param) {
       _redrawCanvas();
       _deactivateTool();
     }
+    return;
+  }
+  if (_activeTool === 'level') {
+    if (!time) return;
+    var lcd = lastChartData;
+    if (!lcd || !lcd.candles) return;
+    var lvlTime = Math.floor(typeof time === 'number' ? time : new Date(time).getTime() / 1000);
+    var lvlIdx = lcd.candles.time.indexOf(lvlTime);
+    if (lvlIdx < 0) {
+      for (var k = 0; k < lcd.candles.time.length; k++) {
+        if (Math.floor(lcd.candles.time[k]) === lvlTime) { lvlIdx = k; break; }
+      }
+    }
+    if (lvlIdx >= 0) {
+      var _hi = lcd.candles.high[lvlIdx];
+      var _lo = lcd.candles.low[lvlIdx];
+      if (_hi != null && _lo != null) {
+        _levelMarkers.push({ time: lvlTime, high: _hi, low: _lo });
+        _saveDrawings();
+        _redrawCanvas();
+      }
+    }
+    _deactivateTool();
     return;
   }
   if (!time) return;
@@ -2125,6 +2186,21 @@ function _getDragTarget(x, y) {
     if (Math.abs(y - hy) <= 6)
       return { line: 'hline', hIdx: i };
   }
+  // Level markers
+  for (var i = _levelMarkers.length - 1; i >= 0; i--) {
+    var m = _levelMarkers[i];
+    var hy = candleSeries.priceToCoordinate(m.high);
+    var ly = candleSeries.priceToCoordinate(m.low);
+    if (hy == null || ly == null) continue;
+    hy = Math.round(hy); ly = Math.round(ly);
+    var dY = Math.round((hy + ly) / 2);
+    if (Math.abs(x - (chartW - 14)) <= 10 && Math.abs(y - dY) <= 10)
+      return { line: 'level-del', lIdx: i };
+    if (Math.abs(y - hy) <= 6)
+      return { line: 'level-high', lIdx: i };
+    if (Math.abs(y - ly) <= 6)
+      return { line: 'level-low', lIdx: i };
+  }
   return null;
 }
 
@@ -2142,7 +2218,7 @@ function _chartTouchXY(e) {
 
 // Capture-phase mousedown for drag start (fires before chart internal handler)
 document.querySelector('.chart-container').addEventListener('mousedown', function(e) {
-  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0)) return;
+  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0)) return;
   var xy = _chartXY(e);
   var target = _getDragTarget(xy.x, xy.y);
   if (target) {
@@ -2189,6 +2265,14 @@ document.querySelector('.chart-container').addEventListener('mousedown', functio
       e.stopPropagation();
       return;
     }
+    if (target.line === 'level-del') {
+      _levelMarkers.splice(target.lIdx, 1);
+      _saveDrawings();
+      _redrawCanvas();
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     _dragState = target;
     if (_dragState.line === 'move') {
       _dragState.startX = xy.x;
@@ -2214,7 +2298,7 @@ document.querySelector('.chart-container').addEventListener('mousedown', functio
 
 // Touchstart handler (mirrors mousedown)
 document.querySelector('.chart-container').addEventListener('touchstart', function(e) {
-  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0)) return;
+  if (_activeTool || (_positionDrawings.length === 0 && _trendLines.length === 0 && _chartPriceLines.length === 0 && _fibTools.length === 0 && _measureTools.length === 0 && _levelMarkers.length === 0)) return;
   var xy = _chartTouchXY(e);
   var target = _getDragTarget(xy.x, xy.y);
   if (target) {
@@ -2251,6 +2335,13 @@ document.querySelector('.chart-container').addEventListener('touchstart', functi
       }
       if (target.line === 'measure-del') {
         _measureTools.splice(target.mIdx, 1);
+        _saveDrawings();
+        _redrawCanvas();
+        e.preventDefault();
+        return;
+      }
+      if (target.line === 'level-del') {
+        _levelMarkers.splice(target.lIdx, 1);
         _saveDrawings();
         _redrawCanvas();
         e.preventDefault();
@@ -2371,6 +2462,18 @@ function _dragMoveHandler(xy) {
       var h = _chartPriceLines[_dragState.hIdx];
       h.price = newPrice;
       h.ref.applyOptions({ price: newPrice });
+      _redrawCanvas();
+    }
+  } else if (_dragState.line === 'level-high') {
+    var newPrice = candleSeries.coordinateToPrice(xy.y);
+    if (newPrice != null) {
+      _levelMarkers[_dragState.lIdx].high = newPrice;
+      _redrawCanvas();
+    }
+  } else if (_dragState.line === 'level-low') {
+    var newPrice = candleSeries.coordinateToPrice(xy.y);
+    if (newPrice != null) {
+      _levelMarkers[_dragState.lIdx].low = newPrice;
       _redrawCanvas();
     }
   } else {
