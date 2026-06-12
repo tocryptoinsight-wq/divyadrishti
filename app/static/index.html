@@ -3673,7 +3673,8 @@ async function fetchAnalysis() {
   const res = document.getElementById('resolutionSelect').value;
   const symbol = currentSymbol;
   try {
-    const cached = _analysisCache.get(symbol);
+    const cacheKey = symbol + '_' + res;
+    const cached = _analysisCache.get(cacheKey);
     let url = API + '/analysis/' + symbol + '?resolution=' + res;
     if (cached) url += '&since=' + cached.lastCandleTime;
     const resp = await fetch(url);
@@ -3732,7 +3733,7 @@ async function fetchAnalysis() {
         }
       }
     }
-    _analysisCache.set(symbol, { data: data, lastCandleTime: data.candles.time[data.candles.time.length - 1] });
+    _analysisCache.set(cacheKey, { data: data, lastCandleTime: data.candles.time[data.candles.time.length - 1] });
     if (symbol !== currentSymbol) return false;
     mtfData = data.mtf;
     renderAnalysis(data);
